@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 6963926615718750726}
   - component: {fileID: 2693584122497105757}
   - component: {fileID: 4378132659423608881}
-  - component: {fileID: 6767480438925920700}
   - component: {fileID: 9112737342572456790}
+  - component: {fileID: 7915500768561461288}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -95,27 +95,6 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6767480438925920700
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 676691661460832940}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6eae1244fac898047b8705a5d2aa2b41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  wantToMoveBack: 0
-  wantToMoveForward: 0
-  wantToMoveRight: 0
-  wantToMoveLeft: 0
-  wantToShootUp: 0
-  wantToShootDown: 0
-  wantToShootLeft: 0
-  wantToShootRight: 0
-  wantToBlock: 0
 --- !u!114 &9112737342572456790
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -129,4 +108,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerTransform: {fileID: 1229475733073743826}
-  playerRigidBody: {fileID: 0}
+  playerIntent: {fileID: 7915500768561461288}
+--- !u!114 &7915500768561461288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 676691661460832940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1eafda2f03a748646b8a9b7d3b42f194, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wantToMoveBack: 0
+  wantToMoveForward: 0
+  wantToMoveRight: 0
+  wantToMoveLeft: 0
+  wantToShootUp: 0
+  wantToShootDown: 0
+  wantToShootLeft: 0
+  wantToShootRight: 0
+  wantToBlock: 0
+  id: 0
+  otherPlayer: {fileID: 0}

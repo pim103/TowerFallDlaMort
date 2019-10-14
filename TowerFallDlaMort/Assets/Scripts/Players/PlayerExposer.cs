@@ -7,7 +7,10 @@ namespace Scripts.Players
 {
     public class PlayerExposer : MonoBehaviour
     {
+        [SerializeField]
         public Transform playerTransform;
-        public Rigidbody playerRigidBody;
+
+        [SerializeField]
+        public PlayerIntent playerIntent;
     }
 }

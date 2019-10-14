@@ -6,21 +6,21 @@ namespace Scripts.Players
 {
     public class PlayerController : MonoBehaviour
     {
-        public PlayerIntent player1Intent;
-        public PlayerIntent player2Intent;
-        public PlayerExposer player1Exposer;
-        public PlayerExposer player2Exposer;
+        [SerializeField] 
+        private PlayerExposer player1Exposer;
+        [SerializeField] 
+        private PlayerExposer player2Exposer;
 
         private void Start()
         {
-            resetPlayerIntent(player1Intent);
-            resetPlayerIntent(player2Intent);
+            resetPlayerIntent(player1Exposer.playerIntent);
+            resetPlayerIntent(player2Exposer.playerIntent);
         }
 
         private void Update()
         {
-            checkPlayerIntent(player1Intent, player1Exposer);
-            checkPlayerIntent(player2Intent, player2Exposer);
+            checkPlayerIntent(player1Exposer);
+            checkPlayerIntent(player2Exposer);
         }
 
         private void resetPlayerIntent(PlayerIntent playerIntent)
@@ -38,8 +38,10 @@ namespace Scripts.Players
             playerIntent.wantToBlock = false;
         }
         
-        private void checkPlayerIntent(PlayerIntent playerIntent, PlayerExposer playerExposer)
+        private void checkPlayerIntent(PlayerExposer playerExposer)
         {
+            PlayerIntent playerIntent = playerExposer.playerIntent;
+            
             if (playerIntent.wantToMoveBack == true && playerExposer.playerTransform.position.z > -8)
             {
                 playerExposer.playerTransform.Translate(0, 0, -1);
@@ -50,14 +52,14 @@ namespace Scripts.Players
                 playerExposer.playerTransform.Translate(0, 0, 1);
             }
             
-            if (playerIntent.wantToMoveRight == true && playerExposer.playerTransform.position.x > -8)
-            {
-                playerExposer.playerTransform.Translate(-1, 0, 0);
-            }
-            
-            if (playerIntent.wantToMoveLeft == true && playerExposer.playerTransform.position.x < 8)
+            if (playerIntent.wantToMoveRight == true && playerExposer.playerTransform.position.x < 8)
             {
                 playerExposer.playerTransform.Translate(1, 0, 0);
+            }
+            
+            if (playerIntent.wantToMoveLeft == true && playerExposer.playerTransform.position.x > -8)
+            {
+                playerExposer.playerTransform.Translate(-1, 0, 0);
             }
         }
     }
