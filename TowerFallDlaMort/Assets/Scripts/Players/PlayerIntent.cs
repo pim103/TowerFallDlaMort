@@ -11,7 +11,10 @@ namespace Scripts.Players
         public bool wantToMoveRight;
         public bool wantToMoveLeft;
 
-        public bool wantToShoot;
+        public bool wantToShootUp;
+        public bool wantToShootDown;
+        public bool wantToShootLeft;
+        public bool wantToShootRight;
 
         public bool wantToBlock;
     }
