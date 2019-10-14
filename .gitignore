@@ -5,6 +5,13 @@
 [Bb]uilds/
 Assets/AssetStoreTools*
 
+# Jetbrain Rider Cache
+.idea/
+Assets/Plugins/Editor/JetBrains*
+
+# Visual Studio Code
+.vscode/
+
 # Visual Studio cache directory
 .vs/
 
@@ -34,3 +41,9 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+
+TowerFallDlaMort/Assets/Plugins\.meta
+
+TowerFallDlaMort/Assets/Plugins/Editor\.meta
+
+TowerFallDlaMort/Assets/Plugins/Editor/JetBrains\.meta
