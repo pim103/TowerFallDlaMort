@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+namespace Scripts.Players
 {
+    public class PlayerController : MonoBehaviour
+    {
+    }
 }

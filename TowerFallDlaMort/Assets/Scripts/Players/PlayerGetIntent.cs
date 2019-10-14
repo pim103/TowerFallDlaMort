@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerGetIntent : MonoBehaviour
+namespace Scripts.Players
 {
+    public class PlayerGetIntent : PlayerIntent
+    {
+    }
 }

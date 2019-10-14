@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Scripts.Games;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,6 +24,9 @@ namespace Scripts.Menus
 
         [SerializeField]
         private GameObject gameContainer;
+
+        [SerializeField]
+        private GameController gameController;
 
         public void DesactiveMenu()
         {
@@ -60,6 +64,18 @@ namespace Scripts.Menus
         {
             gameContainer.SetActive(true);
             menuContainer.SetActive(false);
+
+            gameController.InitStartGame();
+        }
+
+        public void ReturnMenu()
+        {
+            // TODO : Create Restart button, add parameter to return
+
+            gameContainer.SetActive(false);
+            menuContainer.SetActive(true);
+
+            ActiveMenu(Menus.MAIN_MENU);
         }
 
         // Start is called before the first frame update

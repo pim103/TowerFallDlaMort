@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerIntent : MonoBehaviour
+namespace Scripts.Players
 {
-    public bool wantToMoveBack;
-    public bool wantToMoveForward;
-    public bool wantToMoveRight;
-    public bool wantToMoveLeft;
+    public class PlayerIntent : MonoBehaviour
+    {
+        public bool wantToMoveBack;
+        public bool wantToMoveForward;
+        public bool wantToMoveRight;
+        public bool wantToMoveLeft;
 
-    public bool wantToShoot;
+        public bool wantToShoot;
 
-    public bool wantToBlock;
+        public bool wantToBlock;
+    }
 }
