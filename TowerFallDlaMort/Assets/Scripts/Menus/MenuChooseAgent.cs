@@ -13,9 +13,18 @@ namespace Scripts.Menus
         [SerializeField]
         private MenuController menuController;
 
+        [SerializeField]
+        private Button playButton;
+
         private void Start()
         {
             backButton.onClick.AddListener(BackButton);
+            playButton.onClick.AddListener(WantToStartGame);
+        }
+
+        private void WantToStartGame()
+        {
+            menuController.StartGame();
         }
 
         private void BackButton()

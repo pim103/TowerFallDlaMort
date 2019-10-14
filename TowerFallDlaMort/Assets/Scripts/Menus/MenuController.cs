@@ -18,6 +18,12 @@ namespace Scripts.Menus
         [SerializeField]
         private GameObject chooseAgentMenu;
 
+        [SerializeField]
+        private GameObject menuContainer;
+
+        [SerializeField]
+        private GameObject gameContainer;
+
         public void DesactiveMenu()
         {
             mainMenu.SetActive(false);
@@ -48,6 +54,12 @@ namespace Scripts.Menus
 
                 menuInt.InitMenu();
             }
+        }
+
+        public void StartGame()
+        {
+            gameContainer.SetActive(true);
+            menuContainer.SetActive(false);
         }
 
         // Start is called before the first frame update
