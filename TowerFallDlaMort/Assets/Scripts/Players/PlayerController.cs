@@ -9,6 +9,11 @@ namespace Scripts.Players
     {
         [SerializeField] 
         private ObjectsInScene ois;
+        [SerializeField] 
+        private GameState gs;
+
+        [SerializeField] 
+        private GameObject projectilePrefab;
 
         /*
         private void Start()
