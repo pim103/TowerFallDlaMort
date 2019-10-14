@@ -7,7 +7,8 @@ namespace Scripts.Games
 {
     public class GameController : MonoBehaviour
     {
-        // Seconds
+        // Time left before the end
+        // Value in seconds
         private const int GAME_TIME = 500;
 
         [SerializeField]
