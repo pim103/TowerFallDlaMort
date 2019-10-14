@@ -16,6 +16,12 @@ namespace Scripts.Menus
         [SerializeField]
         private Button quitButton;
 
+        private void Start()
+        {
+            playButton.onClick.AddListener(WantToPlayButton);
+            quitButton.onClick.AddListener(WantToQuit);
+        }
+
         private void WantToPlayButton()
         {
             menuController.ActiveMenu(Menus.CHOOSE_AGENT_MENU);
@@ -28,8 +34,6 @@ namespace Scripts.Menus
 
         public void InitMenu()
         {
-            playButton.onClick.AddListener(WantToPlayButton);
-            quitButton.onClick.AddListener(WantToQuit);
             Debug.Log("Main Menu");
         }
     }

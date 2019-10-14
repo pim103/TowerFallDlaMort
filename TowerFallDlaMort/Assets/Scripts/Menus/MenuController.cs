@@ -28,8 +28,8 @@ namespace Scripts.Menus
         {
             DesactiveMenu();
 
-            MenuInterface menuInt;
-            GameObject menuSelected;
+            MenuInterface menuInt = null;
+            GameObject menuSelected = null;
 
             switch(typeMenu)
             {
@@ -38,9 +38,6 @@ namespace Scripts.Menus
                     break;
                 case Menus.CHOOSE_AGENT_MENU:
                     menuSelected = chooseAgentMenu;
-                    break;
-                default:
-                    menuSelected = null;
                     break;
             }
 

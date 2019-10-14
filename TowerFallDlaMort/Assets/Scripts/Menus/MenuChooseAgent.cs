@@ -13,6 +13,11 @@ namespace Scripts.Menus
         [SerializeField]
         private MenuController menuController;
 
+        private void Start()
+        {
+            backButton.onClick.AddListener(BackButton);
+        }
+
         private void BackButton()
         {
             menuController.ActiveMenu(Menus.MAIN_MENU);
@@ -20,7 +25,6 @@ namespace Scripts.Menus
 
         public void InitMenu()
         {
-            backButton.onClick.AddListener(BackButton);
             Debug.Log("Choose Agent Menu");
         }
     }
