@@ -10,7 +10,7 @@ namespace Scripts.Players
     {
         [SerializeField]
         private int id;
-        [SerializeField] 
+        [SerializeField]
         private PlayerGetIntent otherPlayer;
         public void Update()
         {

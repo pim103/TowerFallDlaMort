@@ -10,6 +10,7 @@ namespace Scripts.Players
         [SerializeField] 
         private ObjectsInScene ois;
 
+        /*
         private void Start()
         {
             ResetPlayerIntent(ois.player1Exposer.playerIntent);
@@ -21,6 +22,7 @@ namespace Scripts.Players
             CheckPlayerIntent(ois.player1Exposer);
             CheckPlayerIntent(ois.player2Exposer);
         }
+        */
 
         private void ResetPlayerIntent(PlayerIntent playerIntent)
         {
@@ -60,6 +62,11 @@ namespace Scripts.Players
             {
                 playerExposer.playerTransform.Translate(-1, 0, 0);
             }
+        }
+
+        public void SyncPlayersView()
+        {
+            
         }
     }
 }

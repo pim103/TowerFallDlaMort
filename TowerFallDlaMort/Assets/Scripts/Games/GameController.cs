@@ -1,6 +1,8 @@
-﻿using Scripts.Menus;
+﻿using System;
+using Scripts.Menus;
 using System.Collections;
 using System.Collections.Generic;
+using Scripts.Players;
 using UnityEngine;
 
 namespace Scripts.Games
@@ -15,6 +17,8 @@ namespace Scripts.Games
         private MenuController menuController;
 
         private Coroutine timer;
+
+        public bool gameIsStart = false;
 
         private IEnumerator CounterTimeLeft()
         {
@@ -32,13 +36,31 @@ namespace Scripts.Games
         public void InitStartGame()
         {
             // TODO : reset position of players and to reset all values of intent
+            gameIsStart = true;
             timer = StartCoroutine(CounterTimeLeft());
         }
 
         public void EndGame()
         {
             // TODO : Show menu with scores
+            gameIsStart = false;
             menuController.ReturnMenu();
+        }
+
+        public void Update()
+        {
+            if (!gameIsStart)
+            {
+                return;
+            }
+
+            //PlayerController.SyncPlayersView();
+            SyncProjectilesView();
+        }
+
+        public void SyncProjectilesView()
+        {
+            
         }
     }
 }
