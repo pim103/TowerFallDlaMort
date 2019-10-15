@@ -90,6 +90,7 @@ namespace Scripts.Games
             items.Add(ois.itemExposer.itemTransform);
             
             //agent1 = new RandomAgent();
+            //agent1 = ois.player1Exposer.playerAgent;
             //agent2 = new RandomRolloutAgent();
             
             GameStateRules.Init(ref gs);

@@ -63,13 +63,13 @@ namespace Games.GameState
             HandleAgentInputs(ref gs, player1Actions, 0);
             HandleAgentInputs(ref gs, player2Actions, 1);
             
-            //CalculateScore(ref gs);
+            CalculateScore(ref gs);
         }
         
         public static void Step(ref GameStateData gs, Intent player1Actions, int id)
         {
             HandleAgentInputs(ref gs, player1Actions, id);
-            //CalculateScore(ref gs);
+            CalculateScore(ref gs);
         }
 
         public static GameStateData Clone(ref GameStateData gs)
@@ -129,7 +129,6 @@ namespace Games.GameState
                     playerData.playerPosition += Vector3.forward * playerData.PlayerSpeed + Vector3.left * playerData.PlayerSpeed;
                     break;
                 case ActionsAvailable.MOVE_FORWARD_RIGHT:
-                    playerData.PlayerScore += 10;
                     playerData.playerPosition += Vector3.forward * playerData.PlayerSpeed + Vector3.right * playerData.PlayerSpeed;
                     break;
                 case ActionsAvailable.MOVE_BACK_LEFT:
@@ -267,8 +266,8 @@ namespace Games.GameState
             if (distance < gs.lastDistance)
             {
                 gs.lastDistance = distance;
-                player1Data.PlayerScore += (int)(distance - 100)* -1;
-                player2Data.PlayerScore += (int)(distance - 100)* -1;
+                player1Data.PlayerScore += 10;
+                player2Data.PlayerScore += 10;
             }
 
             gs.players[0] = player1Data;

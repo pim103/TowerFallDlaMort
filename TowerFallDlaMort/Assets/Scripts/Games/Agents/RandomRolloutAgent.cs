@@ -30,31 +30,31 @@ namespace Games.Agents
             [WriteOnly] 
             public int id;
 
-            public Intent intent;
+            public NativeArray<ActionsAvailable> intent;
+
+            public Intent getIntent;
             
             public void Execute()
             {
                 var iterations = 5;
 
-                int summedScore = 0;
-                int indexI = 0;
-                int indexJ = 0;
+                int indexI = (int) ActionsAvailable.NONE;
+                int indexJ = (int) ActionsAvailable.NONE;
                 
                 var gsCopy = GameStateRules.Clone(ref gs);
-
-                intent = new Intent();
+                int summedScore = gsCopy.players[id].PlayerScore;
                 
                 for (int i = 0; i <= (int) ActionsAvailable.NONE; i++)
                 {
-                    intent.moveIntent = (ActionsAvailable) i;
+                    getIntent.moveIntent = (ActionsAvailable) i;
                     for (int j = (int) ActionsAvailable.NONE; j <= (int) ActionsAvailable.BLOCK; j++)
                     {
-                        intent.moveIntent = (ActionsAvailable) j;
+                        getIntent.actionIntent = (ActionsAvailable) j;
                         for (int k = 0; k < iterations; k++)
                         {
                             GameStateRules.CopyTo(ref gs, ref gsCopy);
-
-                            GameStateRules.Step(ref gsCopy, intent, id);
+                            
+                            GameStateRules.Step(ref gsCopy, getIntent, id);
 
                             var nbLoop = 500;
                             while (nbLoop != 0)
@@ -65,10 +65,6 @@ namespace Games.Agents
 
                             if (gsCopy.players[id].PlayerScore > summedScore)
                             {
-                                //Debug.Log("i : " + i);
-                                //Debug.Log("j : " + j);
-                                //Debug.Log("PlayerScore : " + gsCopy.players[id].PlayerScore);
-                                //Debug.Log("sum : " + j);
                                 summedScore = gsCopy.players[id].PlayerScore;
                                 indexI = i;
                                 indexJ = j;
@@ -80,8 +76,8 @@ namespace Games.Agents
                     }
                 }
 
-                intent.moveIntent = (ActionsAvailable) indexI;
-                intent.actionIntent = (ActionsAvailable) indexJ;
+                intent[0] = (ActionsAvailable) indexI;
+                intent[1] = (ActionsAvailable) indexJ;
             }
         }
 
@@ -90,16 +86,20 @@ namespace Games.Agents
             var job = new RandomRolloutJob
             {
                 gs = gs,
+                intent = new NativeArray<ActionsAvailable>(2, Allocator.TempJob),
                 rdmAgent = new RandomAgent
                 {
                     rdm = new Random((uint) Time.frameCount)
-                }
+                },
+                id = id
             };
             var handle = job.Schedule();
             handle.Complete();
 
-            Intent intent = job.intent;
+            intent.moveIntent = job.intent[0];
+            intent.actionIntent = job.intent[1];
 
+            job.intent.Dispose();
             return intent;
         }
     }
