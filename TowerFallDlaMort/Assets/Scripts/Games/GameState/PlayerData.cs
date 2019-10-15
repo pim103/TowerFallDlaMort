@@ -11,5 +11,7 @@ namespace Games.GameState
         public float PlayerSpeed;
         public float PlayerRadius;
         public int PlayerScore;
+        public int PlayerLifeStock;
+        public bool IsUntouchable;
     }  
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Games.Agents;
 using Unity.Collections;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Games.GameState
@@ -16,6 +17,7 @@ namespace Games.GameState
         public const int MAX_Z = 10;
         public const int MIN_X = -10;
         public const int MIN_Z = -10;
+        
         
         // Fonction qui initialise le gameState
         public static void Init(ref GameStateData gs)
@@ -43,7 +45,9 @@ namespace Games.GameState
                     playerPosition = new Vector3(8 * (i == 1 ? -1 : 1), 1, 8 * (i == 1 ? -1 : 1)),
                     PlayerSpeed = 0.2f,
                     PlayerRadius = 0.5f,
-                    PlayerScore = 0
+                    PlayerScore = 0,
+                    PlayerLifeStock = 3,
+                    IsUntouchable = false
                 };
                 // On les ajoutes à la liste
                 gs.players.Add(player);
@@ -76,7 +80,7 @@ namespace Games.GameState
             HandleAgentInputs(ref gs, player1Actions, 0);
             HandleAgentInputs(ref gs, player2Actions, 1);
             UpdateProjectiles(ref gs);
-
+            CollisionStatement(ref gs);
             CalculateScore(ref gs);
         }
         
@@ -142,11 +146,12 @@ namespace Games.GameState
                     }
 
                     projectile.position = currentPosition;
+
                     gs.projectiles[i] = projectile;
                 }
             }
         }
-
+        
         public static void CheckPlayerTp(ref GameStateData gs, int id)
         {
             var playerData = gs.players[id];
@@ -184,21 +189,84 @@ namespace Games.GameState
                 gs.items[i] = items;
             }
         }
-
-        /*static void CollisionTrigger(ref GameStateData gs)
+        
+        static void CollisionStatement(ref GameStateData gs)
         {
+            int id = CollisionTrigger(ref gs);
+            if (id == -1)
+                return;
+            var player = gs.players[id];
+            Unity.Mathematics.Random rdm = new Unity.Mathematics.Random((uint) Time.frameCount);
+            player.playerPosition = new Vector3(rdm.NextFloat(MIN_X, MAX_X), 0, rdm.NextFloat(MIN_Z, MAX_Z));
+            
+            Debug.Log("TELEPORTATION PUTAIN : " + id);
+            
+            player.PlayerLifeStock -= 1;
+            player.IsUntouchable = false;
+            gs.players[id] = player;
+        }
+        
+        static int CollisionTrigger(ref GameStateData gs)
+        {
+            var player1 = gs.players[0];
+            var player2 = gs.players[1];
             if (gs.projectiles.Length > 0)
             {
                 for (var i = 0; i < gs.projectiles.Length; i++)
                 {
                     var projectile = gs.projectiles[i];
-                    if (projectile[i])
+                    switch (projectile.ownerId)
                     {
-                        
+                        case 0:
+                            if (player2.IsUntouchable)
+                            {
+                                Debug.Log("Intouchable : " + 1 );
+                                return -1;
+                            }
+                            if (projectile.position.x + projectile.radius <
+                                player2.playerPosition.x - player2.PlayerRadius ||
+                                projectile.position.x - projectile.radius >
+                                player2.playerPosition.x + player2.PlayerRadius ||
+                                projectile.position.z + projectile.radius <
+                                player2.playerPosition.z - player2.PlayerRadius ||
+                                projectile.position.z - projectile.radius >
+                                player2.playerPosition.z + player2.PlayerRadius)
+                            {
+                                Debug.Log("Nothing");
+                                return -1;
+                            }
+                            else
+                            {
+                                player2.IsUntouchable = true;
+                                gs.players[1] = player2;
+                                return 1;
+                            }
+                        case 1:
+                            if (player1.IsUntouchable)
+                            {
+                                Debug.Log("Intouchable : " + 0 );
+                                return -1;
+                            }
+                            if (projectile.position.x + projectile.radius <
+                                player1.playerPosition.x - player1.PlayerRadius || projectile.position.x - projectile.radius >
+                                player1.playerPosition.x + player1.PlayerRadius || projectile.position.z + projectile.radius <
+                                player1.playerPosition.z - player1.PlayerRadius || projectile.position.z - projectile.radius >
+                                player1.playerPosition.z + player1.PlayerRadius)
+                            {
+                                Debug.Log("Nothing");
+                                return -1;
+                            }
+                            else
+                            {
+                                player1.IsUntouchable = true;
+                                gs.players[0] = player1;
+                                return 0;
+                            }
                     }
                 }
             }
-        }*/
+            return -1;
+        }
 
         // Selon l'Id du joueur choisi, execute l'action choisie et update le GameState
         public static void HandleAgentInputs(ref GameStateData gs, Intent actions, int id)
