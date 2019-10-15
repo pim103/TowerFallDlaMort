@@ -26,7 +26,6 @@ namespace Games.Agents
                     parentNode.actions.Add(ActionsAvailable.NONE);
                     parentNode.actions.Add(ActionsAvailable.NONE);
                     var parentNodeChildNode = parentNode.childNodes[parentNode.childNodes.Count-1];
-                    Debug.Log(parentNode.childNodes.Count);
                     parentNodeChildNode.actions = new List<ActionsAvailable>();
                     parentNodeChildNode.actions.Add((ActionsAvailable)i);
                     parentNodeChildNode.actions.Add((ActionsAvailable)j);
@@ -48,15 +47,11 @@ namespace Games.Agents
                         (float)parentNodeChildNode.sumScore / parentNodeChildNode.nSelect + math.sqrt(2) *
                         math.sqrt(math.log(parentNode.nSelect) / parentNodeChildNode.nSelect);
                     parentNode.childNodes[parentNode.childNodes.Count - 1] = parentNodeChildNode;
-                    Debug.Log("bite "+i+" "+j+" "+parentNodeChildNode.nodeChoosingValue);
-                    Debug.Log("bite2 "+i+" "+j+" "+parentNode.childNodes[parentNode.childNodes.Count-1].nodeChoosingValue);
                     actions.Clear();
                 }
             }
-            Debug.Log("WHAT");
             for (int i = 0; i < iterations; i++)
             {
-                Debug.Log("ui");
                 nodeMaxChoosingValue.nodeChoosingValue = 0;
                 nodeMaxChoosingValue.actions = new List<ActionsAvailable>();
                 nodeMaxChoosingValue.actions.Add(ActionsAvailable.NONE);
@@ -74,7 +69,6 @@ namespace Games.Agents
                 currentNode.parentNode = new List<MCTSTreeNode>();
                 currentNode.parentNode.Add(nodeMaxChoosingValue);
                 currentNode.depth = parentNode.depth++;
-                Debug.Log("maxvalue "+nodeMaxChoosingValue.actions[0]+" "+nodeMaxChoosingValue.actions[1]+" "+nodeMaxChoosingValue.nodeChoosingValue+" "+nodeMaxChoosingValue.currentGS.lastDistance);
                 currentNode.currentGS = GameStateRules.Clone(ref nodeMaxChoosingValue.currentGS);
                 currentNode.actions = new List<ActionsAvailable>();
                 currentNode.actions.Add((ActionsAvailable)(nodeMaxChoosingValue.childNodes.Count/(int) ActionsAvailable.NONE));
@@ -93,15 +87,6 @@ namespace Games.Agents
                 
                 while (rollbackNode.depth>0)
                 {
-                    
-                    //Debug.Log("testparent"+rollbackNode.parentNode[0].nSelect);
-                    Debug.Log("testparent"+rollbackNode.depth);
-                    Debug.Log("testparent"+rollbackNode.parentNode[0].depth);
-                    Debug.Log("testparent"+rollbackNode.parentNode[0].nodeChoosingValue);
-                    Debug.Log("testparent2"+rollbackNode.nSelect);
-                    Debug.Log("testparent2"+rollbackNode.nodeChoosingValue);
-                    Debug.Log("testparent2"+rollbackNode.sumScore);
-                    Debug.Log("testparent2"+rollbackNode.sumScore);
                     rollbackNode.nodeChoosingValue =
                         (float)rollbackNode.sumScore / rollbackNode.nSelect + math.sqrt(2) *
                         math.sqrt(math.log(rollbackNode.parentNode[0].nSelect) / rollbackNode.nSelect);
@@ -109,7 +94,6 @@ namespace Games.Agents
                     //currentDepth = rollbackNode.depth;
                 }
             }
-            Debug.Log("before end");
             nodeMaxChoosingValue.nodeChoosingValue = 0;
             nodeMaxChoosingValue.actions = new List<ActionsAvailable>();
             nodeMaxChoosingValue.actions.Add(ActionsAvailable.NONE);
@@ -118,22 +102,16 @@ namespace Games.Agents
             Intent chosenActions = new Intent();
             chosenActions.moveIntent = nodeMaxChoosingValue.actions[0];
             chosenActions.actionIntent = nodeMaxChoosingValue.actions[1];
-            Debug.Log("this is the end");
             return chosenActions;
         }
         
         private MCTSTreeNode GetMaxChoosingValue(MCTSTreeNode root, MCTSTreeNode newMaxNode)
         {
-            Debug.Log("allo"+root.nodeChoosingValue);
             MCTSTreeNode currentNode = root;
             if(root.nodeChoosingValue > 0){
-                Debug.Log("allo2"+root.nodeChoosingValue);
-                Debug.Log("allo3"+newMaxNode.nodeChoosingValue);
                 if (root.nodeChoosingValue>newMaxNode.nodeChoosingValue)
                 {
                     newMaxNode = root;
-                    Debug.Log("maxnow2:"+root.nodeChoosingValue+ " "+root.actions[0]+" "+root.actions[1]);
-                    Debug.Log("maxnow:"+newMaxNode.nodeChoosingValue+ " "+newMaxNode.actions[0]+" "+newMaxNode.actions[1]);
                 }
 
                 if (currentNode.childNodes!=null)
