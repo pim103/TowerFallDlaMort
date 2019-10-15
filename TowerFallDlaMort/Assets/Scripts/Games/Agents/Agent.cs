@@ -26,6 +26,17 @@ namespace Games.Agents
         BLOCK
     }
 
+    public enum AgentType
+    {
+        IS_PLAYER,
+        IS_RANDOM,
+        IS_RANDOM_ROLLOUT,
+        IS_MCTS,
+        IS_ASTAR,
+        
+        IS_NULL
+    }
+
     public interface Agent
     {
         List<ActionsAvailable> Act(ref GameStateData gs, int id);
