@@ -9,6 +9,10 @@ namespace Games.GameState
     public static class GameStateRules
     {
         public const int MAX_PLAYERS = 2;
+        public const int MAX_X = 10;
+        public const int MAX_Z = 10;
+        public const int MIN_X = -10;
+        public const int MIN_Z = -10;
         
         // Fonction qui initialise le gameState
         public static void Init(ref GameStateData gs)
@@ -115,7 +119,102 @@ namespace Games.GameState
                 }
             }
         }
-        
+
+        /*
+        public static void HandleAgentInputs(ref GameStateData gs, Intent actions, int id)
+        {
+            var playerData = gs.players[id];
+            switch (actions.moveIntent)
+            {
+                case ActionsAvailable.MOVE_FORWARD:
+                    playerData.playerPosition += Vector3.forward * playerData.PlayerSpeed;
+                    break;
+                case ActionsAvailable.MOVE_BACK:
+                    playerData.playerPosition += Vector3.back * playerData.PlayerSpeed;
+                    break;
+                case ActionsAvailable.MOVE_LEFT:
+                    playerData.playerPosition += Vector3.left * playerData.PlayerSpeed;
+                    break;
+                case ActionsAvailable.MOVE_RIGHT:
+                    playerData.playerPosition += Vector3.right * playerData.PlayerSpeed;
+                    break;
+                case ActionsAvailable.MOVE_FORWARD_LEFT:
+                    playerData.playerPosition += Vector3.forward * playerData.PlayerSpeed + Vector3.left * playerData.PlayerSpeed;
+                    break;
+                case ActionsAvailable.MOVE_FORWARD_RIGHT:
+                    playerData.playerPosition += Vector3.forward * playerData.PlayerSpeed + Vector3.right * playerData.PlayerSpeed;
+                    break;
+                case ActionsAvailable.MOVE_BACK_LEFT:
+                    playerData.playerPosition += Vector3.back * playerData.PlayerSpeed + Vector3.left * playerData.PlayerSpeed;
+                    break;
+                case ActionsAvailable.MOVE_BACK_RIGHT:
+                    playerData.playerPosition += Vector3.back * playerData.PlayerSpeed + Vector3.right * playerData.PlayerSpeed;
+                    break;
+            }
+
+            switch (actions.actionIntent)
+            {
+                case ActionsAvailable.BLOCK:
+                    break;
+                case ActionsAvailable.SHOT_FORWARD: // SHOOT UP
+                    gs.projectiles.Add(new ProjectileData
+                    {
+                        position = gs.players[id].playerPosition + Vector3.forward * 1.2f,
+                        speed = Vector3.forward * GameStateData.projectileSpeed
+                    });
+                    break;
+                case ActionsAvailable.SHOT_BACK: // SHOOT BACK
+                    gs.projectiles.Add(new ProjectileData
+                    {
+                        position = gs.players[id].playerPosition + Vector3.back * 1.2f,
+                        speed = Vector3.back * GameStateData.projectileSpeed
+                    });
+                    break;
+                case ActionsAvailable.SHOT_LEFT: // SHOOT LEFT
+                    gs.projectiles.Add(new ProjectileData
+                    {
+                        position = gs.players[id].playerPosition + Vector3.left * 1.2f,
+                        speed = Vector3.left * GameStateData.projectileSpeed
+                    });
+                    break;
+                case ActionsAvailable.SHOT_RIGHT: // SHOOT RIGHT
+                    gs.projectiles.Add(new ProjectileData
+                    {
+                        position = gs.players[id].playerPosition + Vector3.right * 1.2f,
+                        speed = Vector3.right * GameStateData.projectileSpeed
+                    });
+                    break;
+            }
+            
+            gs.players[id] = playerData;
+        }
+        */
+        public static void CheckPlayerTp(ref GameStateData gs, int id)
+        {
+            var playerData = gs.players[id];
+
+            Vector3 currentPosition = playerData.playerPosition;
+            if (playerData.playerPosition.x < MIN_X)
+            {
+                currentPosition.x = MAX_X - 1;
+            }
+            else if (playerData.playerPosition.x > MAX_X )
+            {
+                currentPosition.x = MIN_X + 1;
+            }
+
+            if (playerData.playerPosition.z < MIN_Z)
+            {
+                currentPosition.z = MAX_Z - 1;
+            }
+            else if (playerData.playerPosition.z > MAX_Z)
+            {
+                currentPosition.z = MIN_Z + 1;
+            }
+
+            playerData.playerPosition = currentPosition;
+            gs.players[id] = playerData;
+        }
         
         public static void UpdateItems(ref GameStateData gs)
         {
@@ -144,81 +243,81 @@ namespace Games.GameState
         }*/
 
         // Selon l'Id du joueur choisi, execute l'action choisie et update le GameState
-        public static void HandleAgentInputs(ref GameStateData gs, Intent actions, int i)
+        public static void HandleAgentInputs(ref GameStateData gs, Intent actions, int id)
         {
-            var playerData = gs.players[i];
+            var playerData = gs.players[id];
             switch (actions.moveIntent)
-                {
-                    case ActionsAvailable.MOVE_FORWARD:
-                        playerData.playerPosition += Vector3.forward * playerData.PlayerSpeed;
-                        break;
-                    case ActionsAvailable.MOVE_BACK:
-                        playerData.playerPosition += Vector3.back * playerData.PlayerSpeed;
-                        break;
-                    case ActionsAvailable.MOVE_LEFT:
-                        playerData.playerPosition += Vector3.left * playerData.PlayerSpeed;
-                        break;
-                    case ActionsAvailable.MOVE_RIGHT:
-                        playerData.playerPosition += Vector3.right * playerData.PlayerSpeed;
-                        break;
-                    case ActionsAvailable.MOVE_FORWARD_LEFT:
-                        playerData.playerPosition += Vector3.forward * playerData.PlayerSpeed + Vector3.left * playerData.PlayerSpeed;
-                        break;
-                    case ActionsAvailable.MOVE_FORWARD_RIGHT:
-                        playerData.playerPosition += Vector3.forward * playerData.PlayerSpeed + Vector3.right * playerData.PlayerSpeed;
-                        break;
-                    case ActionsAvailable.MOVE_BACK_LEFT:
-                        playerData.playerPosition += Vector3.back * playerData.PlayerSpeed + Vector3.left * playerData.PlayerSpeed;
-                        break;
-                    case ActionsAvailable.MOVE_BACK_RIGHT:
-                        playerData.playerPosition += Vector3.back * playerData.PlayerSpeed + Vector3.right * playerData.PlayerSpeed;
-                        break;
-                    case ActionsAvailable.BLOCK:
-                        break;
-                }
+            {
+                case ActionsAvailable.MOVE_FORWARD:
+                    playerData.playerPosition += Vector3.forward * playerData.PlayerSpeed;
+                    break;
+                case ActionsAvailable.MOVE_BACK:
+                    playerData.playerPosition += Vector3.back * playerData.PlayerSpeed;
+                    break;
+                case ActionsAvailable.MOVE_LEFT:
+                    playerData.playerPosition += Vector3.left * playerData.PlayerSpeed;
+                    break;
+                case ActionsAvailable.MOVE_RIGHT:
+                    playerData.playerPosition += Vector3.right * playerData.PlayerSpeed;
+                    break;
+                case ActionsAvailable.MOVE_FORWARD_LEFT:
+                    playerData.playerPosition += Vector3.forward * playerData.PlayerSpeed + Vector3.left * playerData.PlayerSpeed;
+                    break;
+                case ActionsAvailable.MOVE_FORWARD_RIGHT:
+                    playerData.playerPosition += Vector3.forward * playerData.PlayerSpeed + Vector3.right * playerData.PlayerSpeed;
+                    break;
+                case ActionsAvailable.MOVE_BACK_LEFT:
+                    playerData.playerPosition += Vector3.back * playerData.PlayerSpeed + Vector3.left * playerData.PlayerSpeed;
+                    break;
+                case ActionsAvailable.MOVE_BACK_RIGHT:
+                    playerData.playerPosition += Vector3.back * playerData.PlayerSpeed + Vector3.right * playerData.PlayerSpeed;
+                    break;
+                case ActionsAvailable.BLOCK:
+                    break;
+            }
 
             switch (actions.actionIntent)
             {
-                
-                    case ActionsAvailable.SHOT_FORWARD: // SHOOT UP
-                        gs.projectiles.Add(new ProjectileData
-                        {
-                            position = gs.players[i].playerPosition + Vector3.forward * 1.2f,
-                            speed = Vector3.forward * GameStateData.projectileSpeed,
-                            radius = GameStateData.projectileRadius,
-                            ownerId = i
-                        });
-                        break;
-                    case ActionsAvailable.SHOT_BACK: // SHOOT BACK
-                        gs.projectiles.Add(new ProjectileData
-                        {
-                            position = gs.players[i].playerPosition + Vector3.back * 1.2f,
-                            speed = Vector3.back * GameStateData.projectileSpeed,
-                            radius = GameStateData.projectileRadius,
-                            ownerId = i
-                        });
-                        break;
-                    case ActionsAvailable.SHOT_LEFT: // SHOOT LEFT
-                        gs.projectiles.Add(new ProjectileData
-                        {
-                            position = gs.players[i].playerPosition + Vector3.left * 1.2f,
-                            speed = Vector3.left * GameStateData.projectileSpeed,
-                            radius = GameStateData.projectileRadius,
-                            ownerId = i
-                        });
-                        break;
-                    case ActionsAvailable.SHOT_RIGHT: // SHOOT RIGHT
-                        gs.projectiles.Add(new ProjectileData
-                        {
-                            position = gs.players[i].playerPosition + Vector3.right * 1.2f,
-                            speed = Vector3.right * GameStateData.projectileSpeed,
-                            radius = GameStateData.projectileRadius,
-                            ownerId = i
-                        });
-                        break;
+                case ActionsAvailable.SHOT_FORWARD: // SHOOT UP
+                    gs.projectiles.Add(new ProjectileData
+                    {
+                        position = gs.players[id].playerPosition + Vector3.forward * 1.2f,
+                        speed = Vector3.forward * GameStateData.projectileSpeed,
+                        radius = GameStateData.projectileRadius,
+                        ownerId = id
+                    });
+                    break;
+                case ActionsAvailable.SHOT_BACK: // SHOOT BACK
+                    gs.projectiles.Add(new ProjectileData
+                    {
+                        position = gs.players[id].playerPosition + Vector3.back * 1.2f,
+                        speed = Vector3.back * GameStateData.projectileSpeed,
+                        radius = GameStateData.projectileRadius,
+                        ownerId = id
+                    });
+                    break;
+                case ActionsAvailable.SHOT_LEFT: // SHOOT LEFT
+                    gs.projectiles.Add(new ProjectileData
+                    {
+                        position = gs.players[id].playerPosition + Vector3.left * 1.2f,
+                        speed = Vector3.left * GameStateData.projectileSpeed,
+                        radius = GameStateData.projectileRadius,
+                        ownerId = id
+                    });
+                    break;
+                case ActionsAvailable.SHOT_RIGHT: // SHOOT RIGHT
+                    gs.projectiles.Add(new ProjectileData
+                    {
+                        position = gs.players[id].playerPosition + Vector3.right * 1.2f,
+                        speed = Vector3.right * GameStateData.projectileSpeed,
+                        radius = GameStateData.projectileRadius,
+                        ownerId = id
+                    });
+                    break;
             }
 
-            gs.players[i] = playerData;
+            gs.players[id] = playerData;
+            CheckPlayerTp(ref gs, id);
         }
         
         // Calcul le score de chaque joueur et update le GameState
