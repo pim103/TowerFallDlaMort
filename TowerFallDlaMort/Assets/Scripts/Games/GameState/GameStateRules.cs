@@ -28,7 +28,8 @@ namespace Games.GameState
             gs.items = new NativeList<ItemsData>(MAX_ITEMS, Allocator.Persistent);
             gs.lastDistance = 100;
             gs.canWin = new NativeArray<bool>(MAX_PLAYERS, Allocator.Persistent);
-               
+            gs.currentGameStep = 0;   
+            
             InitPlayers(ref gs);
             InitItems(ref gs);
             // On crée un object en initialisant sa position et sa rotation
@@ -46,6 +47,7 @@ namespace Games.GameState
                     PlayerSpeed = 0.2f,
                     PlayerRadius = 0.5f,
                     PlayerScore = 0,
+                    weapon = WeaponList.basic_weapon,
                     PlayerLifeStock = 3,
                     IsUntouchable = false
                 };
@@ -81,12 +83,16 @@ namespace Games.GameState
             HandleAgentInputs(ref gs, player2Actions, 1);
             UpdateProjectiles(ref gs);
             CollisionStatement(ref gs);
+
+            gs.currentGameStep++;
+
             CalculateScore(ref gs);
         }
         
         public static void Step(ref GameStateData gs, Intent player1Actions, int id)
         {
             HandleAgentInputs(ref gs, player1Actions, id);
+            gs.currentGameStep++;
             //UpdateProjectiles(ref gs);
             CalculateScore(ref gs);
         }
@@ -146,8 +152,13 @@ namespace Games.GameState
                     }
 
                     projectile.position = currentPosition;
-
+                    projectile.timer--;
                     gs.projectiles[i] = projectile;
+
+                    if (projectile.timer <= 0)
+                    {
+                        gs.projectiles.RemoveAtSwapBack(i);
+                    }
                 }
             }
         }
@@ -298,46 +309,78 @@ namespace Games.GameState
                 case ActionsAvailable.MOVE_BACK_RIGHT:
                     playerData.playerPosition += Vector3.back * playerData.PlayerSpeed + Vector3.right * playerData.PlayerSpeed;
                     break;
-                case ActionsAvailable.BLOCK:
-                    break;
             }
 
             switch (actions.actionIntent)
             {
+                case ActionsAvailable.BLOCK:
+                    break;
                 case ActionsAvailable.SHOT_FORWARD: // SHOOT UP
+                    if (gs.currentGameStep - playerData.weapon.lastShot <= playerData.weapon.frequency)
+                    {
+                        break;
+                    }
+                    
+                    playerData.weapon.lastShot = gs.currentGameStep;
+                    
                     gs.projectiles.Add(new ProjectileData
                     {
                         position = gs.players[id].playerPosition + Vector3.forward * 1.2f,
-                        speed = Vector3.forward * GameStateData.projectileSpeed,
+                        speed = Vector3.forward * gs.players[id].weapon.projectileSpeed,
                         radius = GameStateData.projectileRadius,
-                        ownerId = id
+                        ownerId = id,
+                        timer = gs.players[id].weapon.durability
                     });
                     break;
                 case ActionsAvailable.SHOT_BACK: // SHOOT BACK
+                    if (gs.currentGameStep - playerData.weapon.lastShot <= playerData.weapon.frequency)
+                    {
+                        break;
+                    }
+                    
+                    playerData.weapon.lastShot = gs.currentGameStep;
+                    
                     gs.projectiles.Add(new ProjectileData
                     {
                         position = gs.players[id].playerPosition + Vector3.back * 1.2f,
-                        speed = Vector3.back * GameStateData.projectileSpeed,
+                        speed = Vector3.back * gs.players[id].weapon.projectileSpeed,
                         radius = GameStateData.projectileRadius,
-                        ownerId = id
+                        ownerId = id,
+                        timer = gs.players[id].weapon.durability
                     });
                     break;
                 case ActionsAvailable.SHOT_LEFT: // SHOOT LEFT
+                    if (gs.currentGameStep - playerData.weapon.lastShot <= playerData.weapon.frequency)
+                    {
+                        break;
+                    }
+                    
+                    playerData.weapon.lastShot = gs.currentGameStep;
+                    
                     gs.projectiles.Add(new ProjectileData
                     {
                         position = gs.players[id].playerPosition + Vector3.left * 1.2f,
-                        speed = Vector3.left * GameStateData.projectileSpeed,
+                        speed = Vector3.left * gs.players[id].weapon.projectileSpeed,
                         radius = GameStateData.projectileRadius,
-                        ownerId = id
+                        ownerId = id,
+                        timer = gs.players[id].weapon.durability
                     });
                     break;
                 case ActionsAvailable.SHOT_RIGHT: // SHOOT RIGHT
+                    if (gs.currentGameStep - playerData.weapon.lastShot <= playerData.weapon.frequency)
+                    {
+                        break;
+                    }
+
+                    playerData.weapon.lastShot = gs.currentGameStep;
+                    
                     gs.projectiles.Add(new ProjectileData
                     {
                         position = gs.players[id].playerPosition + Vector3.right * 1.2f,
-                        speed = Vector3.right * GameStateData.projectileSpeed,
+                        speed = Vector3.right * gs.players[id].weapon.projectileSpeed,
                         radius = GameStateData.projectileRadius,
-                        ownerId = id
+                        ownerId = id,
+                        timer = gs.players[id].weapon.durability
                     });
                     break;
             }

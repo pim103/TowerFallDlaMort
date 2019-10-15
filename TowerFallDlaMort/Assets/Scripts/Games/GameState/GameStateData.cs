@@ -15,5 +15,6 @@ namespace Games.GameState
         public float lastDistance;
         public NativeArray<bool> canWin;
 
+        public int currentGameStep;
     }
 }

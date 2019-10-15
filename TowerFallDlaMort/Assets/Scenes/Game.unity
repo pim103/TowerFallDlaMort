@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -761,7 +761,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 7.38e-43, y: NaN, z: 7.38e-43, w: 1.3288954e-25}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 3.2e-44}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -1141,6 +1141,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player2
       objectReference: {fileID: 0}
+    - target: {fileID: 4621264800339443506, guid: 9fa7a54ba5516c74c87f9ffbb22626c5,
+        type: 3}
+      propertyPath: players.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4621264800339443506, guid: 9fa7a54ba5516c74c87f9ffbb22626c5,
+        type: 3}
+      propertyPath: PlayerId
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4621264800339443506, guid: 9fa7a54ba5516c74c87f9ffbb22626c5,
+        type: 3}
+      propertyPath: gc
+      value: 
+      objectReference: {fileID: 1792012898}
     - target: {fileID: 9112737342572456790, guid: 9fa7a54ba5516c74c87f9ffbb22626c5,
         type: 3}
       propertyPath: playerAgent
@@ -1206,21 +1221,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4621264800339443506, guid: 9fa7a54ba5516c74c87f9ffbb22626c5,
-        type: 3}
-      propertyPath: players.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4621264800339443506, guid: 9fa7a54ba5516c74c87f9ffbb22626c5,
-        type: 3}
-      propertyPath: PlayerId
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4621264800339443506, guid: 9fa7a54ba5516c74c87f9ffbb22626c5,
-        type: 3}
-      propertyPath: gc
-      value: 
-      objectReference: {fileID: 1792012898}
     m_RemovedComponents:
     - {fileID: 188390717600194018, guid: 9fa7a54ba5516c74c87f9ffbb22626c5, type: 3}
     - {fileID: 6767480438925920700, guid: 9fa7a54ba5516c74c87f9ffbb22626c5, type: 3}
@@ -1707,6 +1707,36 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7649678505847549812, guid: 361c80fa01850ef4baf187a0e9f0890a,
+        type: 3}
+      propertyPath: m_Name
+      value: Q Learning
+      objectReference: {fileID: 0}
+    - target: {fileID: 6505895434997108153, guid: 361c80fa01850ef4baf187a0e9f0890a,
+        type: 3}
+      propertyPath: m_Name
+      value: Random
+      objectReference: {fileID: 0}
+    - target: {fileID: 2506330655464560077, guid: 361c80fa01850ef4baf187a0e9f0890a,
+        type: 3}
+      propertyPath: m_Name
+      value: A*
+      objectReference: {fileID: 0}
+    - target: {fileID: 1195544730767280949, guid: 361c80fa01850ef4baf187a0e9f0890a,
+        type: 3}
+      propertyPath: m_Name
+      value: A*
+      objectReference: {fileID: 0}
+    - target: {fileID: 5300759813909202355, guid: 361c80fa01850ef4baf187a0e9f0890a,
+        type: 3}
+      propertyPath: m_Name
+      value: Q Learning
+      objectReference: {fileID: 0}
+    - target: {fileID: 697671443051998999, guid: 361c80fa01850ef4baf187a0e9f0890a,
+        type: 3}
+      propertyPath: m_Name
+      value: Random
+      objectReference: {fileID: 0}
     - target: {fileID: 1980746092175667893, guid: 361c80fa01850ef4baf187a0e9f0890a,
         type: 3}
       propertyPath: m_UiScaleMode
@@ -1747,36 +1777,6 @@ PrefabInstance:
       propertyPath: m_Color.b
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7649678505847549812, guid: 361c80fa01850ef4baf187a0e9f0890a,
-        type: 3}
-      propertyPath: m_Name
-      value: Q Learning
-      objectReference: {fileID: 0}
-    - target: {fileID: 6505895434997108153, guid: 361c80fa01850ef4baf187a0e9f0890a,
-        type: 3}
-      propertyPath: m_Name
-      value: Random
-      objectReference: {fileID: 0}
-    - target: {fileID: 2506330655464560077, guid: 361c80fa01850ef4baf187a0e9f0890a,
-        type: 3}
-      propertyPath: m_Name
-      value: A*
-      objectReference: {fileID: 0}
-    - target: {fileID: 1195544730767280949, guid: 361c80fa01850ef4baf187a0e9f0890a,
-        type: 3}
-      propertyPath: m_Name
-      value: A*
-      objectReference: {fileID: 0}
-    - target: {fileID: 5300759813909202355, guid: 361c80fa01850ef4baf187a0e9f0890a,
-        type: 3}
-      propertyPath: m_Name
-      value: Q Learning
-      objectReference: {fileID: 0}
-    - target: {fileID: 697671443051998999, guid: 361c80fa01850ef4baf187a0e9f0890a,
-        type: 3}
-      propertyPath: m_Name
-      value: Random
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 361c80fa01850ef4baf187a0e9f0890a, type: 3}
 --- !u!114 &1980746093445509407 stripped
@@ -1803,6 +1803,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 4621264800339443506, guid: 9fa7a54ba5516c74c87f9ffbb22626c5,
+        type: 3}
+      propertyPath: players.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4621264800339443506, guid: 9fa7a54ba5516c74c87f9ffbb22626c5,
+        type: 3}
+      propertyPath: gc
+      value: 
+      objectReference: {fileID: 1792012898}
     - target: {fileID: 9112737342572456790, guid: 9fa7a54ba5516c74c87f9ffbb22626c5,
         type: 3}
       propertyPath: playerAgent
@@ -1873,16 +1883,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4621264800339443506, guid: 9fa7a54ba5516c74c87f9ffbb22626c5,
-        type: 3}
-      propertyPath: players.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4621264800339443506, guid: 9fa7a54ba5516c74c87f9ffbb22626c5,
-        type: 3}
-      propertyPath: gc
-      value: 
-      objectReference: {fileID: 1792012898}
     - target: {fileID: 6767480438925920700, guid: 9fa7a54ba5516c74c87f9ffbb22626c5,
         type: 3}
       propertyPath: wantToMoveBack

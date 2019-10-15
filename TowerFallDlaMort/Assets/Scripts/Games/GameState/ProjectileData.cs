@@ -10,5 +10,6 @@ namespace Games.GameState
         public Vector3 speed;
         public float radius;
         public int ownerId;
+        public int timer;
     }
 }

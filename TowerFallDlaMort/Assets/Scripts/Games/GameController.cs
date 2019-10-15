@@ -145,15 +145,19 @@ namespace Scripts.Games
         }
 
         public void SyncNumbersOfProjectiles()
-        {
-            if (nbProjectile < gs.projectiles.Length)
+        {   
+            if (projectiles.Count < gs.projectiles.Length)
             {
-                for (int i = nbProjectile; i < gs.projectiles.Length; i++)
+                for (int i = projectiles.Count; i < gs.projectiles.Length; i++)
                 {
                     AddNewProjectile(gs.projectiles[i].ownerId);
                 }
+            }
 
-                nbProjectile = gs.projectiles.Length;
+            for (int i = 0; i < projectiles.Count - gs.projectiles.Length; i++)
+            {
+                Destroy(projectiles[projectiles.Count - 1]);
+                projectiles.RemoveAt(projectiles.Count - 1);
             }
         }
 
@@ -164,7 +168,7 @@ namespace Scripts.Games
 
         public void SyncProjectilesView()
         {
-            for (int i = 0; i < gs.projectiles.Length; i++)
+            for (int i = 0; i < projectiles.Count; i++)
             {
                 projectiles[i].transform.position = gs.projectiles[i].position;
             }

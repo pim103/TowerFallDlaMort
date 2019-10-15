@@ -33,19 +33,19 @@ namespace Scripts.Players
 
             if (!hasTwoPlayer)
             {
-                if (Input.GetKeyDown(KeyCode.UpArrow))
+                if (Input.GetKey(KeyCode.UpArrow))
                 {
                     intent.actionIntent = ActionsAvailable.SHOT_FORWARD;
                 }
-                else if (Input.GetKeyDown(KeyCode.DownArrow))
+                else if (Input.GetKey(KeyCode.DownArrow))
                 {
                     intent.actionIntent = ActionsAvailable.SHOT_BACK;
                 }
-                else if (Input.GetKeyDown(KeyCode.LeftArrow))
+                else if (Input.GetKey(KeyCode.LeftArrow))
                 {
                     intent.actionIntent = ActionsAvailable.SHOT_LEFT;
                 }
-                else if (Input.GetKeyDown(KeyCode.RightArrow))
+                else if (Input.GetKey(KeyCode.RightArrow))
                 {
                     intent.actionIntent = ActionsAvailable.SHOT_RIGHT;
                 }
@@ -132,19 +132,20 @@ namespace Scripts.Players
                     {
                         intent.moveIntent = ActionsAvailable.MOVE_RIGHT;
                     }
-                    if (Input.GetKeyDown(KeyCode.Y))
+
+                    if (Input.GetKey(KeyCode.Y))
                     {
                         intent.actionIntent = ActionsAvailable.SHOT_FORWARD;
                     }
-                    if (Input.GetKeyDown(KeyCode.H))
+                    if (Input.GetKey(KeyCode.H))
                     {
                         intent.actionIntent = ActionsAvailable.SHOT_BACK;
                     }
-                    if (Input.GetKeyDown(KeyCode.G))
+                    if (Input.GetKey(KeyCode.G))
                     {
                         intent.actionIntent = ActionsAvailable.SHOT_LEFT;
                     }
-                    if (Input.GetKeyDown(KeyCode.J))
+                    if (Input.GetKey(KeyCode.J))
                     {
                         intent.actionIntent = ActionsAvailable.SHOT_RIGHT;
                     }
@@ -190,19 +191,19 @@ namespace Scripts.Players
                         intent.moveIntent = ActionsAvailable.MOVE_RIGHT;
                     }
 
-                    if (Input.GetKeyDown(KeyCode.Keypad8))
+                    if (Input.GetKey(KeyCode.Keypad8))
                     {
                         intent.actionIntent = ActionsAvailable.SHOT_FORWARD;
                     }
-                    if (Input.GetKeyDown(KeyCode.Keypad5))
+                    if (Input.GetKey(KeyCode.Keypad5))
                     {
                         intent.actionIntent = ActionsAvailable.SHOT_BACK;
                     }
-                    if (Input.GetKeyDown(KeyCode.Keypad4))
+                    if (Input.GetKey(KeyCode.Keypad4))
                     {
                         intent.actionIntent = ActionsAvailable.SHOT_LEFT;
                     }
-                    if (Input.GetKeyDown(KeyCode.Keypad6))
+                    if (Input.GetKey(KeyCode.Keypad6))
                     {
                         intent.actionIntent = ActionsAvailable.SHOT_RIGHT;
                     }
