@@ -53,8 +53,14 @@ namespace Scripts.Games
         {
             humanAgentBtn[0].onClick.AddListener(delegate { agent1 = ois.player1Exposer.playerAgent; });
             humanAgentBtn[1].onClick.AddListener(delegate { agent2 = ois.player2Exposer.playerAgent; });
-            randomAgentBtn[0].onClick.AddListener(delegate { agent1 = new RandomAgent(); });
-            randomAgentBtn[1].onClick.AddListener(delegate { agent2 = new RandomAgent(); });
+            randomAgentBtn[0].onClick.AddListener(delegate { agent1 = new RandomAgent
+            {
+                rdm = new Unity.Mathematics.Random((uint) Time.frameCount)
+            }; });
+            randomAgentBtn[1].onClick.AddListener(delegate { agent2 = new RandomAgent
+            {
+                rdm = new Unity.Mathematics.Random((uint) Time.time)
+            }; });
             randomRolloutAgentBtn[0].onClick.AddListener(delegate { agent1 = new RandomRolloutAgent(); });
             randomRolloutAgentBtn[1].onClick.AddListener(delegate { agent2 = new RandomRolloutAgent(); });
         }
@@ -80,14 +86,6 @@ namespace Scripts.Games
             players.Add(ois.player1Exposer.playerTransform);
             players.Add(ois.player2Exposer.playerTransform);
             
-            agent1 = new RandomAgent
-            {
-                rdm = new Unity.Mathematics.Random((uint) Time.frameCount)
-            };
-            agent2 = new RandomAgent
-            {
-                rdm = new Unity.Mathematics.Random((uint) Time.time)
-            };
             //agent2 = new RandomRolloutAgent();
             
             //agent1 = new RandomAgent();
