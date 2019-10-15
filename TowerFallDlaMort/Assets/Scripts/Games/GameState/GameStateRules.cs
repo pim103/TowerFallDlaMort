@@ -16,6 +16,7 @@ namespace Games.GameState
             // On initialise 2 NativeList pour stocker les 2 players et 100 projectiles
             gs.players = new NativeList<PlayerData>(MAX_PLAYERS, Allocator.Persistent);
             gs.projectiles = new NativeList<ProjectileData>(100, Allocator.Persistent);
+            gs.items = new NativeList<ItemsData>(10, Allocator.Persistent);
             gs.lastDistance = 100;
                
             // On crée les 2 joueurs en initialisant leurs positions respectives
