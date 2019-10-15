@@ -68,7 +68,7 @@ namespace Games.GameState
             HandleAgentInputs(ref gs, player1Actions, 0);
             HandleAgentInputs(ref gs, player2Actions, 1);
             UpdateProjectiles(ref gs);
-            
+
             CalculateScore(ref gs);
         }
         
@@ -107,88 +107,38 @@ namespace Games.GameState
         
         static void UpdateProjectiles(ref GameStateData gs)
         {
-            //Debug.Log("NB Proj : " + gs.projectiles.Length);
             if (gs.projectiles.Length > 0)
             {
                 for (var i = 0; i < gs.projectiles.Length; i++)
                 {
                     var projectile = gs.projectiles[i];
                     projectile.position += gs.projectiles[i].speed;
-                    //Debug.Log("Projectile" + i + " : X =" + projectile.position.x + " Y =" + projectile.position.y);
+                    
+                    Vector3 currentPosition = projectile.position;
+                    if (projectile.position.x < MIN_X)
+                    {
+                        currentPosition.x = MAX_X - 1;
+                    }
+                    else if (projectile.position.x > MAX_X )
+                    {
+                        currentPosition.x = MIN_X + 1;
+                    }
+
+                    if (projectile.position.z < MIN_Z)
+                    {
+                        currentPosition.z = MAX_Z - 1;
+                    }
+                    else if (projectile.position.z > MAX_Z)
+                    {
+                        currentPosition.z = MIN_Z + 1;
+                    }
+
+                    projectile.position = currentPosition;
                     gs.projectiles[i] = projectile;
                 }
             }
         }
 
-        /*
-        public static void HandleAgentInputs(ref GameStateData gs, Intent actions, int id)
-        {
-            var playerData = gs.players[id];
-            switch (actions.moveIntent)
-            {
-                case ActionsAvailable.MOVE_FORWARD:
-                    playerData.playerPosition += Vector3.forward * playerData.PlayerSpeed;
-                    break;
-                case ActionsAvailable.MOVE_BACK:
-                    playerData.playerPosition += Vector3.back * playerData.PlayerSpeed;
-                    break;
-                case ActionsAvailable.MOVE_LEFT:
-                    playerData.playerPosition += Vector3.left * playerData.PlayerSpeed;
-                    break;
-                case ActionsAvailable.MOVE_RIGHT:
-                    playerData.playerPosition += Vector3.right * playerData.PlayerSpeed;
-                    break;
-                case ActionsAvailable.MOVE_FORWARD_LEFT:
-                    playerData.playerPosition += Vector3.forward * playerData.PlayerSpeed + Vector3.left * playerData.PlayerSpeed;
-                    break;
-                case ActionsAvailable.MOVE_FORWARD_RIGHT:
-                    playerData.playerPosition += Vector3.forward * playerData.PlayerSpeed + Vector3.right * playerData.PlayerSpeed;
-                    break;
-                case ActionsAvailable.MOVE_BACK_LEFT:
-                    playerData.playerPosition += Vector3.back * playerData.PlayerSpeed + Vector3.left * playerData.PlayerSpeed;
-                    break;
-                case ActionsAvailable.MOVE_BACK_RIGHT:
-                    playerData.playerPosition += Vector3.back * playerData.PlayerSpeed + Vector3.right * playerData.PlayerSpeed;
-                    break;
-            }
-
-            switch (actions.actionIntent)
-            {
-                case ActionsAvailable.BLOCK:
-                    break;
-                case ActionsAvailable.SHOT_FORWARD: // SHOOT UP
-                    gs.projectiles.Add(new ProjectileData
-                    {
-                        position = gs.players[id].playerPosition + Vector3.forward * 1.2f,
-                        speed = Vector3.forward * GameStateData.projectileSpeed
-                    });
-                    break;
-                case ActionsAvailable.SHOT_BACK: // SHOOT BACK
-                    gs.projectiles.Add(new ProjectileData
-                    {
-                        position = gs.players[id].playerPosition + Vector3.back * 1.2f,
-                        speed = Vector3.back * GameStateData.projectileSpeed
-                    });
-                    break;
-                case ActionsAvailable.SHOT_LEFT: // SHOOT LEFT
-                    gs.projectiles.Add(new ProjectileData
-                    {
-                        position = gs.players[id].playerPosition + Vector3.left * 1.2f,
-                        speed = Vector3.left * GameStateData.projectileSpeed
-                    });
-                    break;
-                case ActionsAvailable.SHOT_RIGHT: // SHOOT RIGHT
-                    gs.projectiles.Add(new ProjectileData
-                    {
-                        position = gs.players[id].playerPosition + Vector3.right * 1.2f,
-                        speed = Vector3.right * GameStateData.projectileSpeed
-                    });
-                    break;
-            }
-            
-            gs.players[id] = playerData;
-        }
-        */
         public static void CheckPlayerTp(ref GameStateData gs, int id)
         {
             var playerData = gs.players[id];
@@ -215,7 +165,7 @@ namespace Games.GameState
             playerData.playerPosition = currentPosition;
             gs.players[id] = playerData;
         }
-        
+
         public static void UpdateItems(ref GameStateData gs)
         {
             for (var i = 0; i < gs.items.Length; i++)
@@ -226,7 +176,7 @@ namespace Games.GameState
                 gs.items[i] = items;
             }
         }
-        
+
         /*static void CollisionTrigger(ref GameStateData gs)
         {
             if (gs.projectiles.Length > 0)
