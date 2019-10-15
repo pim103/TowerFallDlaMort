@@ -6,8 +6,9 @@ namespace Games.GameState
 {
     public struct ProjectileData
     {
-        public Vector2 position;
-        public Vector2 speed;
+        public Vector3 position;
+        public Vector3 speed;
         public float radius;
+        public int ownerId;
     }
 }
