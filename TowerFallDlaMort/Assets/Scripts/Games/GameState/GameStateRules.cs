@@ -38,9 +38,9 @@ namespace Games.GameState
             //CalculateScore(ref gs);
         }
         
-        public static void Step(ref GameStateData gs, List<ActionsAvailable> player1Actions)
+        public static void Step(ref GameStateData gs, List<ActionsAvailable> player1Actions, int id)
         {
-            HandleAgentInputs(ref gs, player1Actions, 1);
+            HandleAgentInputs(ref gs, player1Actions, id);
             CalculateScore(ref gs);
         }
 
@@ -146,11 +146,11 @@ namespace Games.GameState
             if (distance < gs.lastDistance)
             {
                 gs.lastDistance = distance;
-                player1Data.PlayerScore += 10;
-                player2Data.PlayerScore += 10;
+                player1Data.PlayerScore += (int)(distance - 100)* -1;
+                player2Data.PlayerScore += (int)(distance - 100)* -1;
             }
 
-            //gs.players[0] = player1Data;
+            gs.players[0] = player1Data;
             gs.players[1] = player2Data;
         }
     }

@@ -55,10 +55,10 @@ namespace Scripts.Games
             players.Add(ois.player1Exposer.playerTransform);
             players.Add(ois.player2Exposer.playerTransform);
 
-            agent1 = ois.player1Exposer.playerAgent;
+            //agent1 = ois.player1Exposer.playerAgent;
             //agent2 = ois.player2Exposer.playerAgent;
             
-            //agent1 = new RandomAgent();
+            agent1 = new RandomAgent();
             agent2 = new RandomRolloutAgent();
             
             GameStateRules.Init(ref gs);
@@ -84,7 +84,7 @@ namespace Scripts.Games
             SyncProjectilesView();
             SyncPlayersView();
             
-            GameStateRules.Step(ref gs, agent1.Act(ref gs), agent2.Act(ref gs));
+            GameStateRules.Step(ref gs, agent1.Act(ref gs, 0), agent2.Act(ref gs, 1));
         }
 
         public void SyncProjectilesView()

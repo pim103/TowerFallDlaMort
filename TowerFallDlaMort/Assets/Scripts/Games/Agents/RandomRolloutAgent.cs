@@ -9,7 +9,7 @@ namespace Games.Agents
     {
         private List<ActionsAvailable> actions = new List<ActionsAvailable>();
 
-        public List<ActionsAvailable> Act(ref GameStateData gs)
+        public List<ActionsAvailable> Act(ref GameStateData gs, int id)
         {
             var agent = new RandomAgent();
             var iterations = 5;
@@ -31,12 +31,12 @@ namespace Games.Agents
                         actions.Add((ActionsAvailable) i);
                         actions.Add((ActionsAvailable) j);
 
-                        GameStateRules.Step(ref gsCopy, actions);
+                        GameStateRules.Step(ref gsCopy, actions, id);
 
-                        var nbLoop = 20;
+                        var nbLoop = 500;
                         while (nbLoop != 0)
                         {
-                            GameStateRules.Step(ref gsCopy, agent.Act(ref gsCopy));
+                            GameStateRules.Step(ref gsCopy, agent.Act(ref gsCopy, id), id);
                             nbLoop--;
                         }
 

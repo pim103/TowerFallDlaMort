@@ -13,7 +13,7 @@ namespace Scripts.Players
         
         private List<ActionsAvailable> actions = new List<ActionsAvailable>();
         
-        public List<ActionsAvailable> Act(ref GameStateData gs)
+        public List<ActionsAvailable> Act(ref GameStateData gs, int id)
         {
             actions.Clear();
 

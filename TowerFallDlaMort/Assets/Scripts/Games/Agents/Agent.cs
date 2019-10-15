@@ -28,6 +28,6 @@ namespace Games.Agents
 
     public interface Agent
     {
-        List<ActionsAvailable> Act(ref GameStateData gs);
+        List<ActionsAvailable> Act(ref GameStateData gs, int id);
     }
 }
