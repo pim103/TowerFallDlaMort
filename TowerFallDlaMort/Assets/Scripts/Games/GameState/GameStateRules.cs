@@ -10,12 +10,15 @@ namespace Games.GameState
     {
         public const int MAX_PLAYERS = 2;
         
+        // Fonction qui initialise le gameState
         public static void Init(ref GameStateData gs)
         {
+            // On initialise 2 NativeList pour stocker les 2 players et 100 projectiles
             gs.players = new NativeList<PlayerData>(MAX_PLAYERS, Allocator.Persistent);
             gs.projectiles = new NativeList<ProjectileData>(100, Allocator.Persistent);
             gs.lastDistance = 100;
-
+               
+            // On crée les 2 joueurs en initialisant leurs positions respectives
             for (int i = 0; i < MAX_PLAYERS; i++)
             {
                 var player = new PlayerData
@@ -25,11 +28,13 @@ namespace Games.GameState
                     PlayerRadius = 0.5f,
                     PlayerScore = 0
                 };
-                
+                // On les ajoutes à la liste
                 gs.players.Add(player);
             }
         }
-
+        
+        // Fonction qui prend en entrée une action pour chaques joueurs,
+        // qui update le GameState et calcul le score des 2 joueurs
         public static void Step(ref GameStateData gs, List<ActionsAvailable> player1Actions, List<ActionsAvailable> player2Actions)
         {
             HandleAgentInputs(ref gs, player1Actions, 0);
@@ -38,12 +43,15 @@ namespace Games.GameState
             //CalculateScore(ref gs);
         }
         
+        // Fonction qui prend en entrée une action pour 1 seul joueur et qui update
+        // le GameState et calcul le score des 2 joueurs
         public static void Step(ref GameStateData gs, List<ActionsAvailable> player1Actions, int id)
         {
             HandleAgentInputs(ref gs, player1Actions, id);
             CalculateScore(ref gs);
         }
-
+        
+        // Fonction qui clone l'état d'un GameState et qui en retourne la copie
         public static GameStateData Clone(GameStateData gs)
         {
             GameStateData newGs = new GameStateData();
@@ -68,7 +76,8 @@ namespace Games.GameState
                 gs.projectiles[i] = projectile;
             }
         }
-
+        
+        // Selon l'Id du joueur choisi, execute l'action choisie et update le GameState
         public static void HandleAgentInputs(ref GameStateData gs, List<ActionsAvailable> actions, int i)
         {
             var playerData = gs.players[i];
@@ -135,7 +144,8 @@ namespace Games.GameState
             
             gs.players[i] = playerData;
         }
-
+        
+        // Calcul le score de chaque joueur et update le GameState
         public static void CalculateScore(ref GameStateData gs)
         {
             var player1Data = gs.players[0];
