@@ -153,11 +153,6 @@ namespace Scripts.Players
                 {
                     if (Input.GetKey(KeyCode.UpArrow))
                     {
-                        intent.moveIntent = ActionsAvailable.MOVE_BACK_RIGHT;
-                    }
-                    else if (Input.GetKey(KeyCode.LeftArrow))
-                    {
-                        intent.moveIntent = ActionsAvailable.MOVE_BACK_LEFT;
                         if (Input.GetKey(KeyCode.RightArrow))
                         {
                             intent.moveIntent = ActionsAvailable.MOVE_FORWARD_RIGHT;
@@ -192,17 +187,9 @@ namespace Scripts.Players
                     }
                     else if (Input.GetKey(KeyCode.RightArrow))
                     {
-                        intent.moveIntent = ActionsAvailable.MOVE_BACK;
+                        intent.moveIntent = ActionsAvailable.MOVE_RIGHT;
                     }
-                    
-                    else if (Input.GetKey(KeyCode.LeftArrow))
-                    {
-                        intent.moveIntent = ActionsAvailable.MOVE_LEFT;
-                    }
-                    else if (Input.GetKey(KeyCode.RightArrow))
-                    {
-                        intent.moveIntent = ActionsAvailable.MOVE_RIGHT; 
-                    }
+
                     if (Input.GetKeyDown(KeyCode.Keypad8))
                     {
                         intent.actionIntent = ActionsAvailable.SHOT_FORWARD;
@@ -221,7 +208,7 @@ namespace Scripts.Players
                     }
                 }
             }
-            Debug.Log("Intent = " + intent);
+
             return intent;
         }
 
