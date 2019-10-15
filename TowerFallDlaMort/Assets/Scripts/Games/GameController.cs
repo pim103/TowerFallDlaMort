@@ -43,7 +43,7 @@ namespace Scripts.Games
         public bool gameIsStart = false;
 
         private GameStateData gs;
-
+    
         private List<Transform> players = new List<Transform>();
 
         private Agent agent1;
@@ -80,6 +80,15 @@ namespace Scripts.Games
             players.Add(ois.player1Exposer.playerTransform);
             players.Add(ois.player2Exposer.playerTransform);
             
+            agent1 = new RandomAgent
+            {
+                rdm = new Unity.Mathematics.Random((uint) Time.frameCount)
+            };
+            agent2 = new RandomAgent
+            {
+                rdm = new Unity.Mathematics.Random((uint) Time.time)
+            };
+            //agent2 = new RandomRolloutAgent();
             
             //agent1 = new RandomAgent();
             //agent2 = new RandomRolloutAgent();

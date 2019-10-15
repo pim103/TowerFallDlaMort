@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Games.GameState;
+using Unity.Collections;
 using UnityEngine;
 
 namespace Games.Agents
@@ -39,6 +40,6 @@ namespace Games.Agents
 
     public interface Agent
     {
-        List<ActionsAvailable> Act(ref GameStateData gs, int id);
+        Intent Act(ref GameStateData gs, int id);
     }
 }

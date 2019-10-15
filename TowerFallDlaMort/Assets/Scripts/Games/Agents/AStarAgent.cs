@@ -8,13 +8,17 @@ namespace Games.Agents
 {
     public class AStarAgent : Agent
     {
-        private List<ActionsAvailable> actions = new List<ActionsAvailable>();
-        private List<AStar.AStar> _aStars = new List<AStar.AStar>();
-        public List<ActionsAvailable> Act(ref GameStateData gs, int id)
-        {
-            actions.Clear();
+        private Intent intent;
+        private List<AStar.AStar>_aStars = new List<AStar.AStar>();
 
-            return actions;
+        public AStarAgent()
+        {
+            intent = new Intent();
+        }
+        
+        public Intent Act(ref GameStateData gs, int id)
+        {
+            return intent;
         }
     }
 }

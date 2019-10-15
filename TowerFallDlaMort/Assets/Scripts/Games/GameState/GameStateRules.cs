@@ -33,10 +33,8 @@ namespace Games.GameState
                 gs.players.Add(player);
             }
         }
-        
-        // Fonction qui prend en entrée une action pour chaques joueurs,
-        // qui update le GameState et calcul le score des 2 joueurs
-        public static void Step(ref GameStateData gs, List<ActionsAvailable> player1Actions, List<ActionsAvailable> player2Actions)
+
+        public static void Step(ref GameStateData gs, Intent player1Actions, Intent player2Actions)
         {
             HandleAgentInputs(ref gs, player1Actions, 0);
             HandleAgentInputs(ref gs, player2Actions, 1);
@@ -44,16 +42,13 @@ namespace Games.GameState
             //CalculateScore(ref gs);
         }
         
-        // Fonction qui prend en entrée une action pour 1 seul joueur et qui update
-        // le GameState et calcul le score des 2 joueurs
-        public static void Step(ref GameStateData gs, List<ActionsAvailable> player1Actions, int id)
+        public static void Step(ref GameStateData gs, Intent player1Actions, int id)
         {
             HandleAgentInputs(ref gs, player1Actions, id);
-            CalculateScore(ref gs);
+            //CalculateScore(ref gs);
         }
-        
-        // Fonction qui clone l'état d'un GameState et qui en retourne la copie
-        public static GameStateData Clone(GameStateData gs)
+
+        public static GameStateData Clone(ref GameStateData gs)
         {
             GameStateData newGs = new GameStateData();
             
@@ -68,6 +63,17 @@ namespace Games.GameState
             return newGs;
         }
         
+        public static void CopyTo(ref GameStateData gs, ref GameStateData gsCopy)
+        {
+            gsCopy.players.Clear();
+            gsCopy.players.AddRange(gs.players);
+
+            gsCopy.projectiles.Clear();
+            gsCopy.projectiles.AddRange(gs.projectiles);
+
+            gsCopy.lastDistance = gs.lastDistance;
+        }
+        
         static void UpdateProjectiles(ref GameStateData gs)
         {
             for (var i = 0; i < gs.projectiles.Length; i++)
@@ -77,9 +83,77 @@ namespace Games.GameState
                 gs.projectiles[i] = projectile;
             }
         }
+
+        public static void HandleAgentInputs(ref GameStateData gs, Intent actions, int id)
+        {
+            var playerData = gs.players[id];
+            switch (actions.moveIntent)
+            {
+                case ActionsAvailable.MOVE_FORWARD:
+                    playerData.playerPosition += Vector3.forward * playerData.PlayerSpeed;
+                    break;
+                case ActionsAvailable.MOVE_BACK:
+                    playerData.playerPosition += Vector3.back * playerData.PlayerSpeed;
+                    break;
+                case ActionsAvailable.MOVE_LEFT:
+                    playerData.playerPosition += Vector3.left * playerData.PlayerSpeed;
+                    break;
+                case ActionsAvailable.MOVE_RIGHT:
+                    playerData.playerPosition += Vector3.right * playerData.PlayerSpeed;
+                    break;
+                case ActionsAvailable.MOVE_FORWARD_LEFT:
+                    playerData.playerPosition += Vector3.forward * playerData.PlayerSpeed + Vector3.left * playerData.PlayerSpeed;
+                    break;
+                case ActionsAvailable.MOVE_FORWARD_RIGHT:
+                    playerData.PlayerScore += 10;
+                    playerData.playerPosition += Vector3.forward * playerData.PlayerSpeed + Vector3.right * playerData.PlayerSpeed;
+                    break;
+                case ActionsAvailable.MOVE_BACK_LEFT:
+                    playerData.playerPosition += Vector3.back * playerData.PlayerSpeed + Vector3.left * playerData.PlayerSpeed;
+                    break;
+                case ActionsAvailable.MOVE_BACK_RIGHT:
+                    playerData.playerPosition += Vector3.back * playerData.PlayerSpeed + Vector3.right * playerData.PlayerSpeed;
+                    break;
+            }
+
+            switch (actions.actionIntent)
+            {
+                case ActionsAvailable.BLOCK:
+                    break;
+                case ActionsAvailable.SHOT_FORWARD: // SHOOT UP
+                    gs.projectiles.Add(new ProjectileData
+                    {
+                        position = gs.players[id].playerPosition + Vector3.forward * 1.2f,
+                        speed = Vector3.forward * GameStateData.projectileSpeed
+                    });
+                    break;
+                case ActionsAvailable.SHOT_BACK: // SHOOT BACK
+                    gs.projectiles.Add(new ProjectileData
+                    {
+                        position = gs.players[id].playerPosition + Vector3.back * 1.2f,
+                        speed = Vector3.back * GameStateData.projectileSpeed
+                    });
+                    break;
+                case ActionsAvailable.SHOT_LEFT: // SHOOT LEFT
+                    gs.projectiles.Add(new ProjectileData
+                    {
+                        position = gs.players[id].playerPosition + Vector3.left * 1.2f,
+                        speed = Vector3.left * GameStateData.projectileSpeed
+                    });
+                    break;
+                case ActionsAvailable.SHOT_RIGHT: // SHOOT RIGHT
+                    gs.projectiles.Add(new ProjectileData
+                    {
+                        position = gs.players[id].playerPosition + Vector3.right * 1.2f,
+                        speed = Vector3.right * GameStateData.projectileSpeed
+                    });
+                    break;
+            }
+            
+            gs.players[id] = playerData;
+        }
         
-        // Selon l'Id du joueur choisi, execute l'action choisie et update le GameState
-        public static void HandleAgentInputs(ref GameStateData gs, List<ActionsAvailable> actions, int i)
+        public static void HandleAgentInputs(ref GameStateData gs, NativeList<ActionsAvailable> actions, int i)
         {
             var playerData = gs.players[i];
             foreach (var action in actions)

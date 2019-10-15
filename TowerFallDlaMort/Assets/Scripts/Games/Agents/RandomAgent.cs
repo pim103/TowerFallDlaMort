@@ -1,21 +1,22 @@
 ﻿using System.Collections.Generic;
 using Games.GameState;
+using Unity.Collections;
 using UnityEngine;
 
 namespace Games.Agents
 {
-    public class RandomAgent : Agent
+    public struct RandomAgent : Agent
     {
-        private List<ActionsAvailable> actions = new List<ActionsAvailable>();
-        
-        public List<ActionsAvailable> Act(ref GameStateData gs, int id)
+        public Unity.Mathematics.Random rdm;
+        private Intent intent;
+
+        public Intent Act(ref GameStateData gs, int id)
         {
-            actions.Clear();
+            intent.actionIntent =
+                (ActionsAvailable) rdm.NextInt((int) ActionsAvailable.NONE, (int) ActionsAvailable.BLOCK);
+            intent.moveIntent = (ActionsAvailable) rdm.NextInt(0, (int) ActionsAvailable.NONE);
 
-            actions.Add((ActionsAvailable)Random.Range(0, (int) ActionsAvailable.NONE) );
-            actions.Add((ActionsAvailable)Random.Range((int) ActionsAvailable.NONE, (int) ActionsAvailable.BLOCK) );
-
-            return actions;
+            return intent;
         }
     }
 }
