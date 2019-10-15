@@ -518,7 +518,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: NaN, y: 5.5e-44, z: 4.5918e-41, w: 0}
+  m_BoundingSphereOverride: {x: 0.1015625, y: 0.015625, z: 0.02734375, w: -0.015625}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -818,6 +818,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player2
       objectReference: {fileID: 0}
+    - target: {fileID: 4621264800339443506, guid: 9fa7a54ba5516c74c87f9ffbb22626c5,
+        type: 3}
+      propertyPath: PlayerId
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9112737342572456790, guid: 9fa7a54ba5516c74c87f9ffbb22626c5,
         type: 3}
       propertyPath: playerAgent
@@ -882,11 +887,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4621264800339443506, guid: 9fa7a54ba5516c74c87f9ffbb22626c5,
-        type: 3}
-      propertyPath: PlayerId
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 188390717600194018, guid: 9fa7a54ba5516c74c87f9ffbb22626c5, type: 3}
@@ -976,13 +976,13 @@ MonoBehaviour:
   - {fileID: 943676186}
   mctsAgentBtn:
   - {fileID: 96281207}
-  - {fileID: 1883272462}
+  - {fileID: 1914146581}
   aStarAgentBtn:
   - {fileID: 253997088}
   - {fileID: 214887707}
   qLearningAgentBtn:
-  - {fileID: 1293284900}
-  - {fileID: 533088781}
+  - {fileID: 1980746093445509407}
+  - {fileID: 628132855}
   ois: {fileID: 1792012900}
   gameIsStart: 0
 --- !u!4 &1792012899
@@ -1317,6 +1317,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 361c80fa01850ef4baf187a0e9f0890a, type: 3}
+--- !u!114 &1980746093445509407 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3085599276550678737, guid: 361c80fa01850ef4baf187a0e9f0890a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1980746093445509406}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2402866686371119248
 PrefabInstance:
   m_ObjectHideFlags: 0
