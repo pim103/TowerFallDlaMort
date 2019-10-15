@@ -53,34 +53,10 @@ namespace Scripts.Games
         {
             humanAgentBtn[0].onClick.AddListener(delegate { agent1 = ois.player1Exposer.playerAgent; });
             humanAgentBtn[1].onClick.AddListener(delegate { agent2 = ois.player2Exposer.playerAgent; });
-
-            for (int i = 0; i < 2; i++)
-            {
-                randomAgentBtn[i].onClick.AddListener(delegate
-                {
-                    switch (i)
-                    {
-                        case 0:
-                            agent1 = new RandomAgent();
-                            break;
-                        case 1:
-                            agent2 = new RandomAgent();
-                            break;
-                    }
-                });
-                randomRolloutAgentBtn[i].onClick.AddListener(delegate
-                {
-                    switch (i)
-                    {
-                        case 0:
-                            agent1 = new RandomRolloutAgent();
-                            break;
-                        case 1:
-                            agent2 = new RandomRolloutAgent();
-                            break;
-                    }
-                });
-            }
+            randomAgentBtn[0].onClick.AddListener(delegate { agent1 = new RandomAgent(); });
+            randomAgentBtn[1].onClick.AddListener(delegate { agent2 = new RandomAgent(); });
+            randomRolloutAgentBtn[0].onClick.AddListener(delegate { agent1 = new RandomRolloutAgent(); });
+            randomRolloutAgentBtn[1].onClick.AddListener(delegate { agent2 = new RandomRolloutAgent(); });
         }
 
         private IEnumerator CounterTimeLeft()
@@ -106,7 +82,7 @@ namespace Scripts.Games
             
             
             //agent1 = new RandomAgent();
-            agent2 = new RandomRolloutAgent();
+            //agent2 = new RandomRolloutAgent();
             
             GameStateRules.Init(ref gs);
         }
