@@ -7,8 +7,11 @@ using UnityEngine;
 namespace Games.GameState
 {
     public static class GameStateRules
-    {
+    {   
+        //public static Unity.Mathematics.Random rdm;
+        
         public const int MAX_PLAYERS = 2;
+        public const int MAX_ITEMS = 6;
         public const int MAX_X = 10;
         public const int MAX_Z = 10;
         public const int MIN_X = -10;
@@ -20,7 +23,7 @@ namespace Games.GameState
             // On initialise 2 NativeList pour stocker les 2 players et 100 projectiles
             gs.players = new NativeList<PlayerData>(MAX_PLAYERS, Allocator.Persistent);
             gs.projectiles = new NativeList<ProjectileData>(100, Allocator.Persistent);
-            gs.items = new NativeList<ItemsData>(10, Allocator.Persistent);
+            gs.items = new NativeList<ItemsData>(MAX_ITEMS, Allocator.Persistent);
             gs.lastDistance = 100;
             gs.canWin = new NativeArray<bool>(MAX_PLAYERS, Allocator.Persistent);
                
@@ -49,15 +52,20 @@ namespace Games.GameState
 
         private static void InitItems(ref GameStateData gs)
         {
-            var item = new ItemsData
+            for (int i = 0; i < MAX_ITEMS; i++)
             {
-                position = new Vector2(0, 0),
-                rotation = new Vector3(0, 0, 0),
-                //rotationSpeed = 10,
-                rotationSpeedVector = new Vector3(5, 5, 5),
-                radius = 1
-            };
-            gs.items.Add(item);
+                var item = new ItemsData
+                {
+                    position = new Vector2(UnityEngine.Random.Range(-8.0f, 8.0f), 
+                        UnityEngine.Random.Range(-8.0f, 8.0f)),
+                    rotation = new Vector3(0, 0, 0),
+                    //rotationSpeed = 10,
+                    rotationSpeedVector = new Vector3(5, 5, 5),
+                    radius = 1
+                };
+                gs.items.Add(item);
+                Debug.Log(item.position);
+            }
         }
         
         // Fonction qui prend en entrée une action pour chaques joueurs,
@@ -168,7 +176,7 @@ namespace Games.GameState
 
         public static void UpdateItems(ref GameStateData gs)
         {
-            for (var i = 0; i < gs.items.Length; i++)
+            for (var i = 0; i < MAX_ITEMS; i++)
             {
                 var items = gs.items[i];
                 //items.rotation.y += gs.items[i].rotationSpeed;

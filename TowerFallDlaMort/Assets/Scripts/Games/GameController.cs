@@ -109,10 +109,14 @@ namespace Scripts.Games
             timer = StartCoroutine(CounterTimeLeft());
             players.Add(ois.player1Exposer.playerTransform);
             players.Add(ois.player2Exposer.playerTransform);
-            
-            items.Add(ois.itemExposer.itemTransform);
-            
+
+            for (int i = 0; i < GameStateRules.MAX_ITEMS; i++)
+            {
+                items.Add(ois.itemExposer[i].itemTransform);
+            }
+                
             GameStateRules.Init(ref gs);
+            SetItemsPosition();
         }
 
         public void EndGame()
@@ -176,8 +180,21 @@ namespace Scripts.Games
 
         public void SyncItemsView()
         {
-            items[0].rotation = Quaternion.Euler(gs.items[0].rotation);
-            //items[0].transform.Rotate(Vector3.up, gs.items[0].rotationSpeed * Time.deltaTime);
+            for (int i = 0; i < GameStateRules.MAX_ITEMS; i++)
+            {
+                items[i].rotation = Quaternion.Euler(gs.items[i].rotation);
+            }
+        }
+
+        public void SetItemsPosition()
+        {
+            for (int i = 0; i < GameStateRules.MAX_ITEMS; i++)
+            {
+                Vector3 currentPosition = items[i].position;
+                currentPosition.x = gs.items[i].position.x;
+                currentPosition.z = gs.items[i].position.y;
+                items[i].position = currentPosition;
+            }
         }
     }
 }

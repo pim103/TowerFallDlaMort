@@ -13,6 +13,6 @@ namespace Games
         public PlayerExposer player2Exposer;
         
         [SerializeField] 
-        public ItemExposer itemExposer;
+        public ItemExposer[] itemExposer;
     }
 }
