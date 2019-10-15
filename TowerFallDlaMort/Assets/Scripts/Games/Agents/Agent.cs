@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Games.GameState;
 using UnityEngine;
 
 namespace Games.Agents
@@ -14,15 +15,19 @@ namespace Games.Agents
         MOVE_FORWARD_LEFT,
         MOVE_BACK_RIGHT,
         MOVE_BACK_LEFT,
+        
+        NONE,
+        
         SHOT_FORWARD,
         SHOT_BACK,
         SHOT_LEFT,
         SHOT_RIGHT,
+        
         BLOCK
     }
 
     public interface Agent
     {
-        ActionsAvailable[] Act();
+        List<ActionsAvailable> Act(ref GameStateData gs);
     }
 }

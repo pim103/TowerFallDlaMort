@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 
 namespace Scripts.Players
@@ -10,7 +11,7 @@ namespace Scripts.Players
         [SerializeField]
         public Transform playerTransform;
 
-        [SerializeField]
-        public PlayerIntent playerIntent;
+        [FormerlySerializedAs("playerIntent")] [SerializeField]
+        public PlayerAgent playerAgent;
     }
 }

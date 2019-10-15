@@ -6,14 +6,15 @@ using UnityEngine.Experimental.PlayerLoop;
 
 namespace Scripts.Players
 {
-    public class PlayerGetIntent : PlayerIntent
+    public class PlayerGetAgent : PlayerAgent
     {
         [SerializeField]
         private int id;
         [SerializeField]
-        private PlayerGetIntent otherPlayer;
+        private PlayerGetAgent otherPlayer;
         public void Update()
         {
+            /*
             if (!otherPlayer || id == 1)
             {
                 if (Input.GetKeyDown(KeyCode.Z) && !Input.GetKeyDown(KeyCode.S))
@@ -203,6 +204,7 @@ namespace Scripts.Players
                     wantToBlock = false;
                 }
             }
+            */
         }
     }
 }

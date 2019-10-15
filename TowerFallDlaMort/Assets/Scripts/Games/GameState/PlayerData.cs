@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
 
-public struct PlayerData
+namespace Games.GameState
 {
-    public Vector2 playerPosition;
-    public const float PlayerSpeed = 0.2f;
-    public const float PlayerRadius = 0.5f;
+    public struct PlayerData {
+        public Vector3 playerPosition;
+        public float PlayerSpeed;
+        public float PlayerRadius;
+        public int PlayerScore;
+    }  
 }

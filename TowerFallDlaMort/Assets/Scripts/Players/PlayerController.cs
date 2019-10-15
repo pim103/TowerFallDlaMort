@@ -9,12 +9,11 @@ namespace Scripts.Players
     {
         [SerializeField] 
         private ObjectsInScene ois;
-        [SerializeField] 
-        private GameState gs;
 
         [SerializeField] 
         private GameObject projectilePrefab;
 
+        private readonly List<Transform> players = new List<Transform>();
         /*
         private void Start()
         {
@@ -28,7 +27,7 @@ namespace Scripts.Players
             CheckPlayerIntent(ois.player2Exposer);
         }
         */
-
+/*
         private void ResetPlayerIntent(PlayerIntent playerIntent)
         {
             playerIntent.wantToMoveBack = false;
@@ -67,11 +66,6 @@ namespace Scripts.Players
             {
                 playerExposer.playerTransform.Translate(-1, 0, 0);
             }
-        }
-
-        public void SyncPlayersView()
-        {
-            
-        }
+        }*/
     }
 }
