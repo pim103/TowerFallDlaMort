@@ -28,6 +28,7 @@ namespace Games.GameState
             gs.canWin = new NativeArray<bool>(MAX_PLAYERS, Allocator.Persistent);
             gs.currentGameStep = 0;
             gs.EndOfGame = false;
+            gs.rdm = new Unity.Mathematics.Random((uint) Time.frameCount);
             
             InitPlayers(ref gs);
             InitItems(ref gs);
@@ -110,8 +111,16 @@ namespace Games.GameState
 
             newGs.projectiles = new NativeList<ProjectileData>(100, Allocator.Temp);
             newGs.projectiles.AddRange(gs.projectiles);
+            
+            newGs.items = new NativeList<ItemsData>(MAX_ITEMS, Allocator.Temp);
+            newGs.items.AddRange(gs.items);
 
             newGs.lastDistance = gs.lastDistance;
+            newGs.rdm = gs.rdm;
+            newGs.currentGameStep = gs.currentGameStep;
+            newGs.EndOfGame = gs.EndOfGame;
+            
+            
 
             return newGs;
         }
@@ -123,8 +132,14 @@ namespace Games.GameState
 
             gsCopy.projectiles.Clear();
             gsCopy.projectiles.AddRange(gs.projectiles);
+            
+            gsCopy.items.Clear();
+            gsCopy.items.AddRange(gs.items);
 
             gsCopy.lastDistance = gs.lastDistance;
+            gsCopy.rdm = gs.rdm;
+            gsCopy.currentGameStep = gs.currentGameStep;
+            gsCopy.EndOfGame = gs.EndOfGame;
         }
 
         private static void CheckIfPlayerIsDead(ref GameStateData gs)
@@ -239,8 +254,7 @@ namespace Games.GameState
                                 projectile.position.z - projectile.radius >
                                 player2.playerPosition.z + player2.PlayerRadius))
                             {
-                                Unity.Mathematics.Random rdm = new Unity.Mathematics.Random((uint) Time.frameCount);
-                                player2.playerPosition = new Vector3(rdm.NextFloat(MIN_X, MAX_X), 0, rdm.NextFloat(MIN_Z, MAX_Z));
+                                player2.playerPosition = new Vector3(gs.rdm.NextFloat(MIN_X, MAX_X), 0, gs.rdm.NextFloat(MIN_Z, MAX_Z));
             
                                 player2.PlayerLifeStock -= 1;
                                 
@@ -256,8 +270,7 @@ namespace Games.GameState
                                 player1.playerPosition.z - player1.PlayerRadius || projectile.position.z - projectile.radius >
                                 player1.playerPosition.z + player1.PlayerRadius))
                             {
-                                Unity.Mathematics.Random rdm = new Unity.Mathematics.Random((uint) Time.frameCount);
-                                player1.playerPosition = new Vector3(rdm.NextFloat(MIN_X, MAX_X), 0, rdm.NextFloat(MIN_Z, MAX_Z));
+                                player1.playerPosition = new Vector3(gs.rdm.NextFloat(MIN_X, MAX_X), 0, gs.rdm.NextFloat(MIN_Z, MAX_Z));
             
                                 player1.PlayerLifeStock -= 1;
                                 
