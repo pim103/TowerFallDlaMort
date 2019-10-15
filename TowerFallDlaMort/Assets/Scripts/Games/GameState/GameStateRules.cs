@@ -8,9 +8,7 @@ using UnityEngine;
 namespace Games.GameState
 {
     public static class GameStateRules
-    {   
-        //public static Unity.Mathematics.Random rdm;
-        
+    {  
         public const int MAX_PLAYERS = 2;
         public const int MAX_ITEMS = 6;
         public const int MAX_X = 10;
