@@ -87,6 +87,8 @@ namespace Scripts.Games
             });
             randomRolloutAgentBtn[0].onClick.AddListener(delegate { agent1 = new RandomRolloutAgent(); });
             randomRolloutAgentBtn[1].onClick.AddListener(delegate { agent2 = new RandomRolloutAgent(); });
+            mctsAgentBtn[0].onClick.AddListener(delegate {agent1 = new MCTSAgent();});
+            mctsAgentBtn[1].onClick.AddListener(delegate {agent2 = new MCTSAgent();});
         }
 
         private IEnumerator CounterTimeLeft()
