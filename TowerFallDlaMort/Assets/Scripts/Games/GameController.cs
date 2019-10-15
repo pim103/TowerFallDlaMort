@@ -8,6 +8,7 @@ using Games.GameState;
 using Scripts.Players;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
@@ -135,6 +136,11 @@ namespace Scripts.Games
             if (!gameIsStart)
             {
                 return;
+            }
+
+            if (gs.EndOfGame)
+            {
+                SceneManager.LoadScene(0);
             }
 
             SyncNumbersOfProjectiles();

@@ -16,5 +16,7 @@ namespace Games.GameState
         public NativeArray<bool> canWin;
 
         public int currentGameStep;
+
+        public bool EndOfGame;
     }
 }

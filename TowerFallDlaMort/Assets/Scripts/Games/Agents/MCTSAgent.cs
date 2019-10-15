@@ -12,7 +12,7 @@ namespace Games.Agents
         public Intent Act(ref GameStateData gs,int id)
         {
             MCTSTreeNode parentNode = new MCTSTreeNode();
-            parentNode.nodeChoosingValue = 0.1f;
+            parentNode.nodeChoosingValue = -1000f;
             parentNode.nSelect = 1;
             parentNode.depth = 0;
             int iterations = 10;
@@ -108,7 +108,7 @@ namespace Games.Agents
         private MCTSTreeNode GetMaxChoosingValue(MCTSTreeNode root, MCTSTreeNode newMaxNode)
         {
             MCTSTreeNode currentNode = root;
-            if(root.nodeChoosingValue > 0){
+            if(root.nodeChoosingValue > -1001){
                 if (root.nodeChoosingValue>newMaxNode.nodeChoosingValue)
                 {
                     newMaxNode = root;

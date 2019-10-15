@@ -26,7 +26,8 @@ namespace Games.GameState
             gs.items = new NativeList<ItemsData>(MAX_ITEMS, Allocator.Persistent);
             gs.lastDistance = 100;
             gs.canWin = new NativeArray<bool>(MAX_PLAYERS, Allocator.Persistent);
-            gs.currentGameStep = 0;   
+            gs.currentGameStep = 0;
+            gs.EndOfGame = false;
             
             InitPlayers(ref gs);
             InitItems(ref gs);
@@ -80,7 +81,8 @@ namespace Games.GameState
             HandleAgentInputs(ref gs, player1Actions, 0);
             HandleAgentInputs(ref gs, player2Actions, 1);
             UpdateProjectiles(ref gs);
-            CollisionStatement(ref gs);
+            CollisionTrigger(ref gs);
+            CheckIfPlayerIsDead(ref gs);
 
             gs.currentGameStep++;
 
@@ -90,8 +92,12 @@ namespace Games.GameState
         public static void Step(ref GameStateData gs, Intent player1Actions, int id)
         {
             HandleAgentInputs(ref gs, player1Actions, id);
+            UpdateProjectiles(ref gs);
+            CollisionTrigger(ref gs);
+            CheckIfPlayerIsDead(ref gs);
+            
             gs.currentGameStep++;
-            //UpdateProjectiles(ref gs);
+            
             CalculateScore(ref gs);
         }
 
@@ -119,6 +125,19 @@ namespace Games.GameState
             gsCopy.projectiles.AddRange(gs.projectiles);
 
             gsCopy.lastDistance = gs.lastDistance;
+        }
+
+        private static void CheckIfPlayerIsDead(ref GameStateData gs)
+        {
+            if (gs.players[0].PlayerLifeStock <= 0)
+            {
+                gs.EndOfGame = true;
+            }
+
+            if (gs.players[1].PlayerLifeStock <= 0)
+            {
+                gs.EndOfGame = true;
+            }
         }
         
         static void UpdateProjectiles(ref GameStateData gs)
@@ -199,23 +218,7 @@ namespace Games.GameState
             }
         }
         
-        static void CollisionStatement(ref GameStateData gs)
-        {
-            int id = CollisionTrigger(ref gs);
-            if (id == -1)
-                return;
-            var player = gs.players[id];
-            Unity.Mathematics.Random rdm = new Unity.Mathematics.Random((uint) Time.frameCount);
-            player.playerPosition = new Vector3(rdm.NextFloat(MIN_X, MAX_X), 0, rdm.NextFloat(MIN_Z, MAX_Z));
-            
-            Debug.Log("TELEPORTATION PUTAIN : " + id);
-            
-            player.PlayerLifeStock -= 1;
-            player.IsUntouchable = false;
-            gs.players[id] = player;
-        }
-        
-        static int CollisionTrigger(ref GameStateData gs)
+        static void CollisionTrigger(ref GameStateData gs)
         {
             var player1 = gs.players[0];
             var player2 = gs.players[1];
@@ -227,54 +230,44 @@ namespace Games.GameState
                     switch (projectile.ownerId)
                     {
                         case 0:
-                            if (player2.IsUntouchable)
-                            {
-                                Debug.Log("Intouchable : " + 1 );
-                                return -1;
-                            }
-                            if (projectile.position.x + projectile.radius <
+                            if ( !(player2.IsUntouchable || projectile.position.x + projectile.radius <
                                 player2.playerPosition.x - player2.PlayerRadius ||
                                 projectile.position.x - projectile.radius >
                                 player2.playerPosition.x + player2.PlayerRadius ||
                                 projectile.position.z + projectile.radius <
                                 player2.playerPosition.z - player2.PlayerRadius ||
                                 projectile.position.z - projectile.radius >
-                                player2.playerPosition.z + player2.PlayerRadius)
+                                player2.playerPosition.z + player2.PlayerRadius))
                             {
-                                Debug.Log("Nothing");
-                                return -1;
-                            }
-                            else
-                            {
-                                player2.IsUntouchable = true;
+                                Unity.Mathematics.Random rdm = new Unity.Mathematics.Random((uint) Time.frameCount);
+                                player2.playerPosition = new Vector3(rdm.NextFloat(MIN_X, MAX_X), 0, rdm.NextFloat(MIN_Z, MAX_Z));
+            
+                                player2.PlayerLifeStock -= 1;
+                                
                                 gs.players[1] = player2;
-                                return 1;
+                                gs.projectiles.RemoveAtSwapBack(i);
                             }
+                            break;
+                            
                         case 1:
-                            if (player1.IsUntouchable)
-                            {
-                                Debug.Log("Intouchable : " + 0 );
-                                return -1;
-                            }
-                            if (projectile.position.x + projectile.radius <
+                            if ( !(player1.IsUntouchable || projectile.position.x + projectile.radius <
                                 player1.playerPosition.x - player1.PlayerRadius || projectile.position.x - projectile.radius >
                                 player1.playerPosition.x + player1.PlayerRadius || projectile.position.z + projectile.radius <
                                 player1.playerPosition.z - player1.PlayerRadius || projectile.position.z - projectile.radius >
-                                player1.playerPosition.z + player1.PlayerRadius)
+                                player1.playerPosition.z + player1.PlayerRadius))
                             {
-                                Debug.Log("Nothing");
-                                return -1;
-                            }
-                            else
-                            {
-                                player1.IsUntouchable = true;
+                                Unity.Mathematics.Random rdm = new Unity.Mathematics.Random((uint) Time.frameCount);
+                                player1.playerPosition = new Vector3(rdm.NextFloat(MIN_X, MAX_X), 0, rdm.NextFloat(MIN_Z, MAX_Z));
+            
+                                player1.PlayerLifeStock -= 1;
+                                
                                 gs.players[0] = player1;
-                                return 0;
+                                gs.projectiles.RemoveAtSwapBack(i);
                             }
+                            break;
                     }
                 }
             }
-            return -1;
         }
 
         // Selon l'Id du joueur choisi, execute l'action choisie et update le GameState
