@@ -65,10 +65,10 @@ namespace Games.Agents
 
                             if (gsCopy.players[id].PlayerScore > summedScore)
                             {
-                                Debug.Log("i : " + i);
-                                Debug.Log("j : " + j);
-                                Debug.Log("PlayerScore : " + gsCopy.players[id].PlayerScore);
-                                Debug.Log("sum : " + j);
+                                //Debug.Log("i : " + i);
+                                //Debug.Log("j : " + j);
+                                //Debug.Log("PlayerScore : " + gsCopy.players[id].PlayerScore);
+                                //Debug.Log("sum : " + j);
                                 summedScore = gsCopy.players[id].PlayerScore;
                                 indexI = i;
                                 indexJ = j;

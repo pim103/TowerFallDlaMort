@@ -45,6 +45,7 @@ namespace Scripts.Games
         private GameStateData gs;
     
         private List<Transform> players = new List<Transform>();
+        private List<Transform> items = new List<Transform>();
 
         private Agent agent1;
         private Agent agent2;
@@ -86,7 +87,7 @@ namespace Scripts.Games
             players.Add(ois.player1Exposer.playerTransform);
             players.Add(ois.player2Exposer.playerTransform);
             
-            //agent2 = new RandomRolloutAgent();
+            items.Add(ois.itemExposer.itemTransform);
             
             //agent1 = new RandomAgent();
             //agent2 = new RandomRolloutAgent();
@@ -113,8 +114,10 @@ namespace Scripts.Games
             //PlayerController.SyncPlayersView();
             SyncProjectilesView();
             SyncPlayersView();
+            SyncItemsView();
             
             GameStateRules.Step(ref gs, agent1.Act(ref gs, 0), agent2.Act(ref gs, 1));
+            GameStateRules.UpdateItems(ref gs);
         }
 
         public void SyncProjectilesView()
@@ -128,6 +131,12 @@ namespace Scripts.Games
             {
                 players[i].position = gs.players[i].playerPosition;
             }
+        }
+
+        public void SyncItemsView()
+        {
+            items[0].rotation = Quaternion.Euler(gs.items[0].rotation);
+            //items[0].transform.Rotate(Vector3.up, gs.items[0].rotationSpeed * Time.deltaTime);
         }
     }
 }

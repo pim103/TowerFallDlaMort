@@ -1,4 +1,5 @@
-﻿using Scripts.Players;
+﻿using Scripts.Items;
+using Scripts.Players;
 using UnityEngine;
 
 namespace Games
@@ -10,5 +11,8 @@ namespace Games
         
         [SerializeField] 
         public PlayerExposer player2Exposer;
+        
+        [SerializeField] 
+        public ItemExposer itemExposer;
     }
 }

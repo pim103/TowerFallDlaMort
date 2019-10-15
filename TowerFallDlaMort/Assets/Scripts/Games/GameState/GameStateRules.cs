@@ -19,6 +19,14 @@ namespace Games.GameState
             gs.items = new NativeList<ItemsData>(10, Allocator.Persistent);
             gs.lastDistance = 100;
                
+            InitPlayers(ref gs);
+            InitItems(ref gs);
+            // On crée un object en initialisant sa position et sa rotation
+
+        }
+
+        private static void InitPlayers(ref GameStateData gs)
+        {
             // On crée les 2 joueurs en initialisant leurs positions respectives
             for (int i = 0; i < MAX_PLAYERS; i++)
             {
@@ -33,6 +41,22 @@ namespace Games.GameState
                 gs.players.Add(player);
             }
         }
+
+        private static void InitItems(ref GameStateData gs)
+        {
+            var item = new ItemsData
+            {
+                position = new Vector2(0, 0),
+                rotation = new Vector3(0, 0, 0),
+                //rotationSpeed = 10,
+                rotationSpeedVector = new Vector3(5, 5, 5),
+                radius = 1
+            };
+            gs.items.Add(item);
+        }
+        
+        // Fonction qui prend en entrée une action pour chaques joueurs,
+        // qui update le GameState et calcul le score des 2 joueurs
 
         public static void Step(ref GameStateData gs, Intent player1Actions, Intent player2Actions)
         {
@@ -153,6 +177,18 @@ namespace Games.GameState
             gs.players[id] = playerData;
         }
         
+        public static void UpdateItems(ref GameStateData gs)
+        {
+            for (var i = 0; i < gs.items.Length; i++)
+            {
+                var items = gs.items[i];
+                //items.rotation.y += gs.items[i].rotationSpeed;
+                items.rotation += gs.items[i].rotationSpeedVector;
+                gs.items[i] = items;
+            }
+        }
+        
+        // Selon l'Id du joueur choisi, execute l'action choisie et update le GameState
         public static void HandleAgentInputs(ref GameStateData gs, NativeList<ActionsAvailable> actions, int i)
         {
             var playerData = gs.players[i];
