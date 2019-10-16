@@ -376,6 +376,8 @@ namespace Games.GameState
                     {
                         item.active = false;
                         gs.items[i] = item;
+                        player1.weapon = WeaponList.paint_weapon;
+                        gs.players[0] = player1;
                     }
                     if (!(item.position.x + item.radius <
                           player2.playerPosition.x - player2.PlayerRadius ||
@@ -388,6 +390,8 @@ namespace Games.GameState
                     {
                         item.active = false;
                         gs.items[i] = item;
+                        player2.weapon = WeaponList.paint_weapon;
+                        gs.players[1] = player2;
                     }
                 }
             }

@@ -7,4 +7,12 @@
         projectileSpeed = 0.05f,
         lastShot = 0
     };
+    
+    public static Weapon paint_weapon = new Weapon
+    {
+        frequency = 5,
+        durability = 500,
+        projectileSpeed = 0.05f,
+        lastShot = 0
+    };
 }
