@@ -107,6 +107,21 @@ namespace Scripts.Games
                 agent1 = new MCTSAgent();
                 ButtonSelector(3, 0);
             });
+            randomRolloutAgentBtn[0].onClick.AddListener(delegate
+            {
+                agent1 = new RandomRolloutAgent();
+                ButtonSelector(2, 0);
+            });
+            randomRolloutAgentBtn[1].onClick.AddListener(delegate
+            {
+                agent2 = new RandomRolloutAgent();
+                ButtonSelector(2, 1);
+            });
+            mctsAgentBtn[0].onClick.AddListener(delegate
+            {
+                agent1 = new MCTSAgent();
+                ButtonSelector(3, 0);
+            });
             mctsAgentBtn[1].onClick.AddListener(delegate
             {
                 agent2 = new MCTSAgent();
