@@ -56,7 +56,7 @@ namespace Games.Agents
                             
                             GameStateRules.Step(ref gsCopy, getIntent, id);
 
-                            var nbLoop = 250;
+                            var nbLoop = 100;
                             while (nbLoop != 0)
                             {
                                 GameStateRules.Step(ref gsCopy, rdmAgent.Act(ref gsCopy, id), id);
