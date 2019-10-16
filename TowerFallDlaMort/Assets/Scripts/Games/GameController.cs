@@ -24,6 +24,8 @@ namespace Scripts.Games
         private MenuController menuController;
         [SerializeField]
         private GameObject projectilePrefab;
+        [SerializeField]
+        private GameObject obstaclePrefab;
 
         [SerializeField] 
         private Button[] humanAgentBtn;
@@ -51,6 +53,7 @@ namespace Scripts.Games
         private List<Transform> items = new List<Transform>();
 
         private List<GameObject> projectiles = new List<GameObject>();
+        private List<GameObject> obstacles = new List<GameObject>();
         
         private Agent agent1;
         private Agent agent2;
@@ -201,6 +204,27 @@ namespace Scripts.Games
                 
             GameStateRules.Init(ref gs);
             SetItemsPosition();
+            PopObstacle();
+        }
+
+        public void PopObstacle()
+        {
+            for (int i = 0; i < GameStateRules.MAX_OBSTACLE; i++)
+            {
+                obstacles.Add(Instantiate(obstaclePrefab, new Vector3(i + 1, 0, 0f), Quaternion.identity));
+                obstacles.Add(Instantiate(obstaclePrefab, new Vector3(0, 0, i + 1), Quaternion.identity));
+                obstacles.Add(Instantiate(obstaclePrefab, new Vector3(-i - 1, 0, 0f), Quaternion.identity));
+                obstacles.Add(Instantiate(obstaclePrefab, new Vector3(0, 0, -i - 1), Quaternion.identity));
+            }
+            
+            //Debug.Log("GameController, GS OBS Length " + gs.obstacles.Length);
+
+            for (int i = 0; i < gs.obstacles.Length; i++)
+            {
+                var obstacleData = gs.obstacles[i];
+                obstacleData.position = obstacles[i].transform.position;
+                gs.obstacles[i] = obstacleData;
+            }
         }
 
         public void EndGame()
