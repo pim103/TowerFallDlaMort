@@ -67,12 +67,14 @@ namespace Scripts.Games
                 agent1 = ois.player1Exposer.playerAgent;
                 ois.player1Exposer.playerAgent.players[0] = true;
                 ois.player2Exposer.playerAgent.players[0] = true;
+                ButtonSelector(0, 0);
             });
             humanAgentBtn[1].onClick.AddListener(delegate
             {
                 agent2 = ois.player2Exposer.playerAgent; 
                 ois.player1Exposer.playerAgent.players[1] = true;
                 ois.player2Exposer.playerAgent.players[1] = true;
+                ButtonSelector(0, 1);
             });
             randomAgentBtn[0].onClick.AddListener(delegate { agent1 = new RandomAgent
                 {
@@ -80,6 +82,7 @@ namespace Scripts.Games
                 };
                 ois.player1Exposer.playerAgent.players[0] = false;
                 ois.player2Exposer.playerAgent.players[0] = false;
+                ButtonSelector(1, 0);
             });
             randomAgentBtn[1].onClick.AddListener(delegate { agent2 = new RandomAgent
                 {
@@ -87,11 +90,77 @@ namespace Scripts.Games
                 };
                 ois.player1Exposer.playerAgent.players[1] = false;
                 ois.player2Exposer.playerAgent.players[1] = false;
+                ButtonSelector(1, 1);
             });
-            randomRolloutAgentBtn[0].onClick.AddListener(delegate { agent1 = new RandomRolloutAgent(); });
-            randomRolloutAgentBtn[1].onClick.AddListener(delegate { agent2 = new RandomRolloutAgent(); });
-            mctsAgentBtn[0].onClick.AddListener(delegate {agent1 = new MCTSAgent();});
-            mctsAgentBtn[1].onClick.AddListener(delegate {agent2 = new MCTSAgent();});
+            randomRolloutAgentBtn[0].onClick.AddListener(delegate
+            {
+                agent1 = new RandomRolloutAgent();
+                ButtonSelector(2, 0);
+            });
+            randomRolloutAgentBtn[1].onClick.AddListener(delegate
+            {
+                agent2 = new RandomRolloutAgent();
+                ButtonSelector(2, 1);
+            });
+            mctsAgentBtn[0].onClick.AddListener(delegate
+            {
+                agent1 = new MCTSAgent();
+                ButtonSelector(3, 0);
+            });
+            mctsAgentBtn[1].onClick.AddListener(delegate
+            {
+                agent2 = new MCTSAgent();
+                ButtonSelector(3, 1);
+            });
+            aStarAgentBtn[0].interactable = false;
+            aStarAgentBtn[1].interactable = false;
+            qLearningAgentBtn[0].interactable = false;
+            qLearningAgentBtn[1].interactable = false;
+            
+            InitDefaultSelection();
+        }
+
+        private void InitDefaultSelection()
+        {
+            agent1 = ois.player1Exposer.playerAgent;
+            ois.player1Exposer.playerAgent.players[0] = true;
+            ois.player2Exposer.playerAgent.players[0] = true;
+            ButtonSelector(0, 0);
+            
+            agent2 = ois.player2Exposer.playerAgent; 
+            ois.player1Exposer.playerAgent.players[1] = true;
+            ois.player2Exposer.playerAgent.players[1] = true;
+            ButtonSelector(0, 1);
+        }
+
+        private void ButtonSelector(int id, int idList)
+        {
+            humanAgentBtn[idList].image.color = Color.white;
+            randomAgentBtn[idList].image.color = Color.white;
+            randomRolloutAgentBtn[idList].image.color = Color.white;
+            mctsAgentBtn[idList].image.color = Color.white;
+
+            switch (id)
+            {
+                case 0:
+                    humanAgentBtn[idList].image.color = Color.red;
+                    break;
+                case 1:
+                    randomAgentBtn[idList].image.color = Color.red;
+                    break;
+                case 2:
+                    randomRolloutAgentBtn[idList].image.color = Color.red;
+                    break;
+                case 3:
+                    mctsAgentBtn[idList].image.color = Color.red;
+                    break;
+                case 4:
+                    aStarAgentBtn[idList].image.color = Color.red;
+                    break;
+                case 5:
+                    qLearningAgentBtn[idList].image.color = Color.red;
+                    break;
+            }
         }
 
         private IEnumerator CounterTimeLeft()
