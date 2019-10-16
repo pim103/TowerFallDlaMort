@@ -273,9 +273,18 @@ namespace Scripts.Games
 
         public void SyncProjectilesView()
         {
-            for (int i = 0; i < projectiles.Count; i++)
+            for (int i = 0; i < gs.projectiles.Length; i++)
             {
                 projectiles[i].transform.position = gs.projectiles[i].position;
+
+                if (gs.projectiles[i].ownerId == 0)
+                {
+                    projectiles[i].GetComponent<Renderer>().material.color = Color.blue;
+                }
+                else
+                {
+                    projectiles[i].GetComponent<Renderer>().material.color = Color.red;
+                }
             }
         }
         

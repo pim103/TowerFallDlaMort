@@ -162,7 +162,7 @@ namespace Games.GameState
         public static void Step(ref GameStateData gs, Intent player1Actions, int id)
         {
             HandleAgentInputs(ref gs, player1Actions, id);
-            //UpdateProjectiles(ref gs);
+            UpdateProjectiles(ref gs);
             CollisionTrigger(ref gs);
             CheckIfPlayerIsDead(ref gs);
             
@@ -250,6 +250,46 @@ namespace Games.GameState
             playerData.playerPosition = currentPosition;
             gs.players[id] = playerData;
         }
+        
+        private static void UpdateProjectiles(ref GameStateData gs)
+        {
+            if (gs.projectiles.Length > 0)
+            {
+                for (var i = 0; i < gs.projectiles.Length; i++)
+                {
+                    var projectile = gs.projectiles[i];
+                    projectile.position += gs.projectiles[i].speed;
+                    
+                    Vector3 currentPosition = projectile.position;
+                    if (projectile.position.x < MIN_X)
+                    {
+                        currentPosition.x = MAX_X - 1;
+                    }
+                    else if (projectile.position.x > MAX_X )
+                    {
+                        currentPosition.x = MIN_X + 1;
+                    }
+
+                    if (projectile.position.z < MIN_Z)
+                    {
+                        currentPosition.z = MAX_Z - 1;
+                    }
+                    else if (projectile.position.z > MAX_Z)
+                    {
+                        currentPosition.z = MIN_Z + 1;
+                    }
+
+                    projectile.position = currentPosition;
+                    projectile.timer--;
+                    gs.projectiles[i] = projectile;
+
+                    if (projectile.timer <= 0)
+                    {
+                        gs.projectiles.RemoveAtSwapBack(i);
+                    }
+                }
+            }
+        }
 
         public static void UpdateItems(ref GameStateData gs)
         {
@@ -286,6 +326,8 @@ namespace Games.GameState
                                 player2.playerPosition = new Vector3(gs.rdm.NextFloat(MIN_X, MAX_X), 0, gs.rdm.NextFloat(MIN_Z, MAX_Z));
             
                                 player2.PlayerLifeStock -= 1;
+                                player1.PlayerScore += 1000;
+                                player2.PlayerScore -= 2000;
                                 
                                 gs.players[1] = player2;
                                 gs.projectiles.RemoveAtSwapBack(i);
@@ -302,6 +344,8 @@ namespace Games.GameState
                                 player1.playerPosition = new Vector3(gs.rdm.NextFloat(MIN_X, MAX_X), 0, gs.rdm.NextFloat(MIN_Z, MAX_Z));
             
                                 player1.PlayerLifeStock -= 1;
+                                player2.PlayerScore += 1000;
+                                player1.PlayerScore -= 2000;
                                 
                                 gs.players[0] = player1;
                                 gs.projectiles.RemoveAtSwapBack(i);
@@ -430,12 +474,8 @@ namespace Games.GameState
             
             float distance = Vector3.Distance(player1Data.playerPosition, player2Data.playerPosition);
 
-            if (distance < gs.lastDistance)
-            {
-                gs.lastDistance = distance;
-                player1Data.PlayerScore += 10;
-                player2Data.PlayerScore += 10;
-            }
+            player1Data.PlayerScore += 30-(int)distance;
+            player2Data.PlayerScore += 30-(int)distance;
 
             gs.players[0] = player1Data;
             gs.players[1] = player2Data;

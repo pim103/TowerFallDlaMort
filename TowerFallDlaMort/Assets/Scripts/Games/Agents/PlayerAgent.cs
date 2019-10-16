@@ -30,7 +30,6 @@ namespace Scripts.Players
             intent.actionIntent = ActionsAvailable.NONE;
             hasTwoPlayer = HasTwoPlayer(players);
 
-
             if (!hasTwoPlayer)
             {
                 if (Input.GetKey(KeyCode.UpArrow))
