@@ -39,6 +39,8 @@ namespace Scripts.Games
         private Button[] aStarAgentBtn;
         [SerializeField] 
         private Button[] qLearningAgentBtn;
+        [SerializeField]
+        private Text timerText;
 
         [SerializeField]
         private ObjectsInScene ois;
@@ -268,9 +270,16 @@ namespace Scripts.Games
             SyncProjectilesView();
             SyncPlayersView();
             SyncItemsView();
+            SyncTimerView();
             
             GameStateRules.Step(ref gs, agent1.Act(ref gs, 0), agent2.Act(ref gs, 1));
             GameStateRules.UpdateItems(ref gs);
+        }
+
+        public void SyncTimerView()
+        {
+            var time = gs.timer;
+            timerText.text = (int)time + " secondes";
         }
 
         public void SyncNumbersOfProjectiles()

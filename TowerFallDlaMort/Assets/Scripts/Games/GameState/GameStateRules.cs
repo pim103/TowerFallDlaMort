@@ -88,6 +88,7 @@ namespace Games.GameState
             gs.EndOfGame = false;
             gs.rdm = new Unity.Mathematics.Random((uint) Time.frameCount);
             gs.obstacles = new NativeList<ObstacleData>(MAX_OBSTACLE * 4, Allocator.Persistent);
+            gs.timer = 99;
             
             InitPlayers(ref gs);
             InitItems(ref gs);
@@ -158,6 +159,7 @@ namespace Games.GameState
             //UpdateProjectiles(ref gs);
             CollisionTriggerProjectile(ref gs);
             CheckIfPlayerIsDead(ref gs);
+            CheckIfTimerHasEnded(ref gs);
 
             var job = new UpdateProjectilesJob
             {
@@ -174,6 +176,7 @@ namespace Games.GameState
             gs.currentGameStep++;
 
             CalculateScore(ref gs);
+            gs.timer -= Time.deltaTime;
         }
         
         public static void Step(ref GameStateData gs, Intent player1Actions, int id)
@@ -182,10 +185,20 @@ namespace Games.GameState
             UpdateProjectiles(ref gs);
             CollisionTriggerProjectile(ref gs);
             CheckIfPlayerIsDead(ref gs);
+            CheckIfTimerHasEnded(ref gs);
             
             gs.currentGameStep++;
-            
+
             CalculateScore(ref gs);
+            gs.timer -= Time.deltaTime;
+        }
+
+        public static void CheckIfTimerHasEnded(ref GameStateData gs)
+        {
+            if (gs.timer <= 0)
+            {
+                gs.EndOfGame = true;
+            }
         }
 
         public static GameStateData Clone(ref GameStateData gs)

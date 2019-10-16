@@ -12,6 +12,7 @@ namespace Games.GameState
         public const float projectileSpeed = 0.5f / 60f * 10f;
         public const float projectileRadius = 0.25f;
         public const float obstacleRadius = 0.5f;
+        public float timer;
 
         public Unity.Mathematics.Random rdm;
         
