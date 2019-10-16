@@ -8,14 +8,14 @@ namespace Games.Agents
     public class MCTSAgent : Agent
     {
         private List<ActionsAvailable> actions = new List<ActionsAvailable>();
-        private MCTSTreeNode nodeMaxChoosingValue;
+        
         public Intent Act(ref GameStateData gs,int id)
         {
             MCTSTreeNode parentNode = new MCTSTreeNode();
             parentNode.nodeChoosingValue = -1000f;
             parentNode.nSelect = 1;
             parentNode.depth = 0;
-            int iterations = 10;
+            int iterations = 300;
             parentNode.childNodes = new List<MCTSTreeNode>();
             for (int i = 0; i <= (int) ActionsAvailable.NONE; i++)
             {
@@ -35,7 +35,7 @@ namespace Games.Agents
                     Intent currentIntents = new Intent();
                     currentIntents.moveIntent = (ActionsAvailable) i;
                     currentIntents.actionIntent = (ActionsAvailable) j;
-                    
+                    Debug.Log("damn"+currentIntents.moveIntent+" "+currentIntents.actionIntent);
                     GameStateRules.Step(ref gsCopy, currentIntents,id);
                     parentNodeChildNode.currentGS = GameStateRules.Clone(ref gsCopy);
                     parentNodeChildNode.sumScore = parentNode.sumScore + gsCopy.players[id].PlayerScore;
@@ -52,14 +52,9 @@ namespace Games.Agents
             }
             for (int i = 0; i < iterations; i++)
             {
-                nodeMaxChoosingValue.nodeChoosingValue = 0;
-                nodeMaxChoosingValue.actions = new List<ActionsAvailable>();
-                nodeMaxChoosingValue.actions.Add(ActionsAvailable.NONE);
-                nodeMaxChoosingValue.actions.Add(ActionsAvailable.NONE);
-                
-                nodeMaxChoosingValue = GetMaxChoosingValue(parentNode,nodeMaxChoosingValue);
-                
+                ref MCTSTreeNode nodeMaxChoosingValue = ref GetMaxChoosingValue(ref parentNode,ref parentNode);
                 nodeMaxChoosingValue.nSelect++;
+                
                 if (nodeMaxChoosingValue.childNodes == null)
                 {
                     nodeMaxChoosingValue.childNodes = new List<MCTSTreeNode>();
@@ -71,11 +66,12 @@ namespace Games.Agents
                 currentNode.depth = parentNode.depth++;
                 currentNode.currentGS = GameStateRules.Clone(ref nodeMaxChoosingValue.currentGS);
                 currentNode.actions = new List<ActionsAvailable>();
-                currentNode.actions.Add((ActionsAvailable)(nodeMaxChoosingValue.childNodes.Count/(int) ActionsAvailable.NONE));
-                currentNode.actions.Add( (ActionsAvailable)(nodeMaxChoosingValue.childNodes.Count%(int) ActionsAvailable.NONE));
+                currentNode.actions.Add((ActionsAvailable)(nodeMaxChoosingValue.childNodes.Count/((int) ActionsAvailable.NONE)));
+                currentNode.actions.Add( (ActionsAvailable)(nodeMaxChoosingValue.childNodes.Count%(int) ActionsAvailable.NONE+(int) ActionsAvailable.MOVE_BACK_LEFT));
                 Intent currentIntents = new Intent();
                 currentIntents.moveIntent = currentNode.actions[0];
-                currentIntents.moveIntent = currentNode.actions[1];
+                currentIntents.actionIntent = currentNode.actions[1];
+                Debug.Log(nodeMaxChoosingValue.nSelect+" "+nodeMaxChoosingValue.depth+" "+nodeMaxChoosingValue.childNodes.Count+" "+nodeMaxChoosingValue.actions[0]+" "+nodeMaxChoosingValue.actions[1]+" "+currentIntents.moveIntent+" "+currentIntents.actionIntent);
                 GameStateRules.Step(ref currentNode.currentGS,currentIntents,id);
                 currentNode.sumScore = nodeMaxChoosingValue.sumScore + currentNode.currentGS.players[id].PlayerScore;
                 currentNode.nSelect = 1;
@@ -94,20 +90,18 @@ namespace Games.Agents
                     //currentDepth = rollbackNode.depth;
                 }
             }
-            nodeMaxChoosingValue.nodeChoosingValue = 0;
-            nodeMaxChoosingValue.actions = new List<ActionsAvailable>();
-            nodeMaxChoosingValue.actions.Add(ActionsAvailable.NONE);
-            nodeMaxChoosingValue.actions.Add(ActionsAvailable.NONE);
-            nodeMaxChoosingValue = GetMaxChoosingValue(parentNode,nodeMaxChoosingValue);
+            
+            ref MCTSTreeNode nodeMaxChoosingValue2 = ref GetMaxChoosingValue(ref parentNode, ref parentNode);
             Intent chosenActions = new Intent();
-            chosenActions.moveIntent = nodeMaxChoosingValue.actions[0];
-            chosenActions.actionIntent = nodeMaxChoosingValue.actions[1];
+            chosenActions.moveIntent = nodeMaxChoosingValue2.actions[0];
+            chosenActions.actionIntent = nodeMaxChoosingValue2.actions[1];
+            Debug.Log("damn2"+chosenActions.moveIntent+" "+chosenActions.actionIntent+ " "+nodeMaxChoosingValue2.nodeChoosingValue);
             return chosenActions;
         }
         
-        private MCTSTreeNode GetMaxChoosingValue(MCTSTreeNode root, MCTSTreeNode newMaxNode)
+        private ref MCTSTreeNode GetMaxChoosingValue(ref MCTSTreeNode root, ref MCTSTreeNode newMaxNode)
         {
-            MCTSTreeNode currentNode = root;
+            ref MCTSTreeNode currentNode = ref root;
             if(root.nodeChoosingValue > -1001){
                 if (root.nodeChoosingValue>newMaxNode.nodeChoosingValue)
                 {
@@ -119,14 +113,14 @@ namespace Games.Agents
                     int childrenToCheck = currentNode.childNodes.Count-1;
                     while (childrenToCheck>=0)
                     {
-                        newMaxNode = GetMaxChoosingValue(root.childNodes[childrenToCheck],newMaxNode);
+                        MCTSTreeNode rootChildNode = root.childNodes[childrenToCheck];
+                        newMaxNode = GetMaxChoosingValue(ref rootChildNode,ref newMaxNode);
                         childrenToCheck--;
                     }
                 }
-                
             }
 
-            return newMaxNode;
+            return ref newMaxNode;
         }
     }
 }
