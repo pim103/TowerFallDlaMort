@@ -128,7 +128,7 @@ namespace Games.GameState
                     active = true
                 };
                 gs.items.Add(item);
-                Debug.Log(item.position);
+                //Debug.Log(item.position);
             }
         }
         
