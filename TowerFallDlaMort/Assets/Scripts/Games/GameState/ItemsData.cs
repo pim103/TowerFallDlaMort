@@ -9,5 +9,6 @@ namespace Games.GameState
         //public float rotationSpeed;
         public Vector3 rotationSpeedVector;
         public float radius;
+        public bool active;
     }
 }

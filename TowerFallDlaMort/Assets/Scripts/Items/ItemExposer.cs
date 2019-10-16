@@ -8,5 +8,7 @@ namespace Scripts.Items
     {
         [SerializeField]
         public Transform itemTransform;
+        [SerializeField]
+        public GameObject ItemGameObject;
     }
 }

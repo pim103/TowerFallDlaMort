@@ -301,6 +301,10 @@ namespace Scripts.Games
             for (int i = 0; i < GameStateRules.MAX_ITEMS; i++)
             {
                 items[i].rotation = Quaternion.Euler(gs.items[i].rotation);
+                if (gs.items[i].active == false)
+                {
+                    items[i].gameObject.SetActive(false);
+                }
             }
         }
 
