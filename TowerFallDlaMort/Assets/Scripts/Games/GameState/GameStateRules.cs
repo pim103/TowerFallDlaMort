@@ -140,10 +140,11 @@ namespace Games.GameState
                     rotation = new Vector3(0, 0, 0),
                     //rotationSpeed = 10,
                     rotationSpeedVector = new Vector3(5, 5, 5),
-                    radius = 1
+                    radius = 0.5f,
+                    active = true
                 };
                 gs.items.Add(item);
-                Debug.Log(item.position);
+                //Debug.Log(item.position);
             }
         }
         
@@ -312,7 +313,6 @@ namespace Games.GameState
             for (var i = 0; i < MAX_ITEMS; i++)
             {
                 var items = gs.items[i];
-                //items.rotation.y += gs.items[i].rotationSpeed;
                 items.rotation += gs.items[i].rotationSpeedVector;
                 gs.items[i] = items;
             }
@@ -374,6 +374,47 @@ namespace Games.GameState
                                 gs.projectiles.RemoveAtSwapBack(i);
                             }
                             break;
+                    }
+                }
+            }
+
+            CheckItemsCollisionTrigger(ref gs, player1, player2);
+        }
+
+        public static void CheckItemsCollisionTrigger(ref GameStateData gs, PlayerData player1, PlayerData player2)
+        {
+            if (gs.items.Length > 0)
+            {
+                for (var i = 0; i < gs.items.Length; i++)
+                {
+                    var item = gs.items[i];
+                    if (!(item.position.x + item.radius <
+                          player1.playerPosition.x - player1.PlayerRadius ||
+                          item.position.x - item.radius >
+                          player1.playerPosition.x + player1.PlayerRadius ||
+                          item.position.y + item.radius <
+                          player1.playerPosition.z - player1.PlayerRadius ||
+                          item.position.y - item.radius >
+                          player1.playerPosition.z + player1.PlayerRadius))
+                    {
+                        item.active = false;
+                        gs.items[i] = item;
+                        player1.weapon = WeaponList.paint_weapon;
+                        gs.players[0] = player1;
+                    }
+                    if (!(item.position.x + item.radius <
+                          player2.playerPosition.x - player2.PlayerRadius ||
+                          item.position.x - item.radius >
+                          player2.playerPosition.x + player2.PlayerRadius ||
+                          item.position.y + item.radius <
+                          player2.playerPosition.z - player2.PlayerRadius ||
+                          item.position.y - item.radius >
+                          player2.playerPosition.z + player2.PlayerRadius))
+                    {
+                        item.active = false;
+                        gs.items[i] = item;
+                        player2.weapon = WeaponList.paint_weapon;
+                        gs.players[1] = player2;
                     }
                 }
             }
