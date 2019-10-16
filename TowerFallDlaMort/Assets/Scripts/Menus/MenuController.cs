@@ -8,7 +8,8 @@ namespace Scripts.Menus
     public enum Menus
     {
         MAIN_MENU,
-        CHOOSE_AGENT_MENU
+        CHOOSE_AGENT_MENU,
+        END_GAME_MENU
     }
 
     public class MenuController : MonoBehaviour
@@ -19,6 +20,9 @@ namespace Scripts.Menus
         [SerializeField]
         private GameObject chooseAgentMenu;
 
+        [SerializeField] 
+        private GameObject endGameMenu;
+        
         [SerializeField]
         private GameObject menuContainer;
 
@@ -26,12 +30,13 @@ namespace Scripts.Menus
         private GameObject gameContainer;
 
         [SerializeField]
-        private GameController gameController;
+        public GameController gameController;
 
         public void DesactiveMenu()
         {
             mainMenu.SetActive(false);
             chooseAgentMenu.SetActive(false);
+            endGameMenu.SetActive(false);
         }
 
         public void ActiveMenu(Menus typeMenu)
@@ -48,6 +53,9 @@ namespace Scripts.Menus
                     break;
                 case Menus.CHOOSE_AGENT_MENU:
                     menuSelected = chooseAgentMenu;
+                    break;
+                case Menus.END_GAME_MENU:
+                    menuSelected = endGameMenu;
                     break;
             }
 

@@ -56,6 +56,8 @@ namespace Scripts.Games
         private Agent agent2;
         private int nbProjectile = 0;
 
+        public int winnerId;
+
         //private bool _hasTwoPlayer = false;
 
         private void Start()
@@ -89,6 +91,21 @@ namespace Scripts.Games
                 ois.player1Exposer.playerAgent.players[1] = false;
                 ois.player2Exposer.playerAgent.players[1] = false;
                 ButtonSelector(1, 1);
+            });
+            randomRolloutAgentBtn[0].onClick.AddListener(delegate
+            {
+                agent1 = new RandomRolloutAgent();
+                ButtonSelector(2, 0);
+            });
+            randomRolloutAgentBtn[1].onClick.AddListener(delegate
+            {
+                agent2 = new RandomRolloutAgent();
+                ButtonSelector(2, 1);
+            });
+            mctsAgentBtn[0].onClick.AddListener(delegate
+            {
+                agent1 = new MCTSAgent();
+                ButtonSelector(3, 0);
             });
             randomRolloutAgentBtn[0].onClick.AddListener(delegate
             {
@@ -182,6 +199,8 @@ namespace Scripts.Games
             players.Add(ois.player1Exposer.playerTransform);
             players.Add(ois.player2Exposer.playerTransform);
 
+            winnerId = -1;
+
             for (int i = 0; i < GameStateRules.MAX_ITEMS; i++)
             {
                 items.Add(ois.itemExposer[i].itemTransform);
@@ -209,7 +228,23 @@ namespace Scripts.Games
 
             if (gs.EndOfGame)
             {
-                SceneManager.LoadScene(0);
+                if (gs.players[0].PlayerLifeStock > gs.players[1].PlayerLifeStock)
+                {
+                    winnerId = 0;
+                }
+                else if (gs.players[0].PlayerLifeStock < gs.players[1].PlayerLifeStock)
+                {
+                    winnerId = 1;
+                }
+                else
+                {
+                    winnerId = -1;
+                }
+                
+                gameIsStart = false;
+                menuController.ActiveMenu(Menus.Menus.END_GAME_MENU);
+
+                return;
             }
 
             SyncNumbersOfProjectiles();

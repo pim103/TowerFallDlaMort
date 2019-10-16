@@ -47,3 +47,9 @@ TowerFallDlaMort/Assets/Plugins\.meta
 TowerFallDlaMort/Assets/Plugins/Editor\.meta
 
 TowerFallDlaMort/Assets/Plugins/Editor/JetBrains\.meta
+
+TowerFallDlaMort/ProjectSettings/EditorBuildSettings.asset
+
+TowerFallDlaMort/ProjectSettings/GraphicsSettings.asset
+
+TowerFallDlaMort/ProjectSettings/UnityConnectSettings.asset

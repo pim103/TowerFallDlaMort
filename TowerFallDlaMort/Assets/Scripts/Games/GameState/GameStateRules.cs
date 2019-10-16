@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Games.Agents;
+using Unity.Burst;
 using Unity.Collections;
+using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -15,7 +18,61 @@ namespace Games.GameState
         public const int MAX_Z = 10;
         public const int MIN_X = -10;
         public const int MIN_Z = -10;
-        
+
+        [BurstCompile]
+        public struct UpdateProjectilesJob : IJob
+        {
+            public GameStateData gs;
+
+            public NativeList<ProjectileData> projectilesList;
+            
+            void UpdateProjectiles()
+            {
+                if (gs.projectiles.Length > 0)
+                {
+                    for (var i = 0; i < gs.projectiles.Length; i++)
+                    {
+                        var projectile = gs.projectiles[i];
+                        projectile.position += gs.projectiles[i].speed;
+                    
+                        Vector3 currentPosition = projectile.position;
+                        if (projectile.position.x < MIN_X)
+                        {
+                            currentPosition.x = MAX_X - 1;
+                        }
+                        else if (projectile.position.x > MAX_X )
+                        {
+                            currentPosition.x = MIN_X + 1;
+                        }
+
+                        if (projectile.position.z < MIN_Z)
+                        {
+                            currentPosition.z = MAX_Z - 1;
+                        }
+                        else if (projectile.position.z > MAX_Z)
+                        {
+                            currentPosition.z = MIN_Z + 1;
+                        }
+
+                        projectile.position = currentPosition;
+                        projectile.timer--;
+                        gs.projectiles[i] = projectile;
+
+                        if (projectile.timer <= 0)
+                        {
+                            gs.projectiles.RemoveAtSwapBack(i);
+                        }
+                    }
+                }
+
+                projectilesList.AddRange(gs.projectiles);
+            }
+            
+            public void Execute()
+            {
+                UpdateProjectiles();
+            }
+        }
         
         // Fonction qui initialise le gameState
         public static void Init(ref GameStateData gs)
@@ -81,10 +138,22 @@ namespace Games.GameState
         {
             HandleAgentInputs(ref gs, player1Actions, 0);
             HandleAgentInputs(ref gs, player2Actions, 1);
-            UpdateProjectiles(ref gs);
+            //UpdateProjectiles(ref gs);
             CollisionTrigger(ref gs);
             CheckIfPlayerIsDead(ref gs);
 
+            var job = new UpdateProjectilesJob
+            {
+                gs = gs,
+                projectilesList = new NativeList<ProjectileData>(Allocator.TempJob)
+            };
+            var handle = job.Schedule();
+            handle.Complete();
+
+            gs.projectiles.Clear();
+            gs.projectiles.AddRange(job.projectilesList);
+            job.projectilesList.Dispose();
+            
             gs.currentGameStep++;
 
             CalculateScore(ref gs);
@@ -93,7 +162,7 @@ namespace Games.GameState
         public static void Step(ref GameStateData gs, Intent player1Actions, int id)
         {
             HandleAgentInputs(ref gs, player1Actions, id);
-            UpdateProjectiles(ref gs);
+            //UpdateProjectiles(ref gs);
             CollisionTrigger(ref gs);
             CheckIfPlayerIsDead(ref gs);
             
@@ -152,46 +221,6 @@ namespace Games.GameState
             if (gs.players[1].PlayerLifeStock <= 0)
             {
                 gs.EndOfGame = true;
-            }
-        }
-        
-        static void UpdateProjectiles(ref GameStateData gs)
-        {
-            if (gs.projectiles.Length > 0)
-            {
-                for (var i = 0; i < gs.projectiles.Length; i++)
-                {
-                    var projectile = gs.projectiles[i];
-                    projectile.position += gs.projectiles[i].speed;
-                    
-                    Vector3 currentPosition = projectile.position;
-                    if (projectile.position.x < MIN_X)
-                    {
-                        currentPosition.x = MAX_X - 1;
-                    }
-                    else if (projectile.position.x > MAX_X )
-                    {
-                        currentPosition.x = MIN_X + 1;
-                    }
-
-                    if (projectile.position.z < MIN_Z)
-                    {
-                        currentPosition.z = MAX_Z - 1;
-                    }
-                    else if (projectile.position.z > MAX_Z)
-                    {
-                        currentPosition.z = MIN_Z + 1;
-                    }
-
-                    projectile.position = currentPosition;
-                    projectile.timer--;
-                    gs.projectiles[i] = projectile;
-
-                    if (projectile.timer <= 0)
-                    {
-                        gs.projectiles.RemoveAtSwapBack(i);
-                    }
-                }
             }
         }
         
