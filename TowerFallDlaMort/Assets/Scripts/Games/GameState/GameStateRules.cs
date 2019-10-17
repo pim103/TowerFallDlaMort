@@ -20,6 +20,7 @@ namespace Games.GameState
         public const int MIN_X = -10;
         public const int MIN_Z = -10;
         public const int MAX_OBSTACLE = 4;
+        private static bool turretHasShoot = false;
 
         [BurstCompile]
         public struct UpdateProjectilesJob : IJob
@@ -149,14 +150,26 @@ namespace Games.GameState
             }
         }
 
+        private static void InitTurret(ref GameStateData gs, Vector3 turretPos, float speed, int durability)
+        {
+            gs.projectiles.Add(new ProjectileData
+            {
+                position = turretPos,
+                speed = new Vector3(gs.rdm.NextFloat(MIN_X, MAX_X), 0, gs.rdm.NextFloat(MIN_X, MAX_X)) * speed,
+                radius = GameStateData.projectileRadius,
+                ownerId = 2,
+                timer = durability
+            });
+        }
+
         private static void InitItems(ref GameStateData gs)
         {
             for (int i = 0; i < MAX_ITEMS; i++)
             {
                 var item = new ItemsData
                 {
-                    position = new Vector3(NoObjectInObstacle(), 
-                        NoObjectInObstacle()),
+                    position = new Vector3(NoObjectInObstacle(ref gs, true), 
+                        NoObjectInObstacle(ref gs, false)),
                     rotation = new Vector3(0, 0, 0),
                     //rotationSpeed = 10,
                     rotationSpeedVector = new Vector3(0, 5, 0),
@@ -168,13 +181,21 @@ namespace Games.GameState
             }
         }
         
-        private static float NoObjectInObstacle()
+        private static float NoObjectInObstacle(ref GameStateData gs, bool isX)
         {
             float nb = 0.0f;
             do
             {
-                nb = UnityEngine.Random.Range(-8.0f, 8.0f);
-            } while (nb >= -4 && nb <= 4);
+                if (isX)
+                {
+                    nb = gs.rdm.NextFloat(MIN_X, MAX_X);
+                }
+                else
+                {
+                    nb = gs.rdm.NextFloat(MIN_Z, MAX_Z);
+                }
+                
+            } while (nb >= -1.0f && nb <= 1.0f);
             
             return nb;
         }
@@ -207,6 +228,7 @@ namespace Games.GameState
 
             CalculateScore(ref gs);
             gs.timer -= Time.deltaTime;
+            TurretShoot(ref gs, 4);
         }
         
         public static void Step(ref GameStateData gs, Intent player1Actions, int id)
@@ -220,7 +242,25 @@ namespace Games.GameState
             gs.currentGameStep++;
 
             CalculateScore(ref gs);
-            gs.timer -= Time.deltaTime;
+            //gs.timer -= Time.deltaTime;
+            //TurretShoot(ref gs, 4);
+        }
+
+        public static void TurretShoot(ref GameStateData gs, int nbShoot)
+        {
+            if ((int)gs.timer % 5 == 0 && turretHasShoot == false)
+            {
+                for (int i = 0; i < nbShoot; i++)
+                {
+                    InitTurret(ref gs, new Vector3(NoObjectInObstacle(ref gs, true), 0, NoObjectInObstacle(ref gs, false)), 0.02f, 250);
+                }
+                turretHasShoot = true;
+            }
+
+            if ((int)gs.timer % 5 != 0)
+            {
+                turretHasShoot = false;
+            }
         }
 
         public static void CheckIfTimerHasEnded(ref GameStateData gs)
@@ -248,8 +288,11 @@ namespace Games.GameState
             newGs.rdm = gs.rdm;
             newGs.currentGameStep = gs.currentGameStep;
             newGs.EndOfGame = gs.EndOfGame;
+
+            newGs.timer = gs.timer;
             
-            
+            newGs.obstacles = new NativeList<ObstacleData>(MAX_OBSTACLE * 4, Allocator.Temp);
+            newGs.obstacles.AddRange(gs.obstacles);
 
             return newGs;
         }
@@ -269,6 +312,11 @@ namespace Games.GameState
             gsCopy.rdm = gs.rdm;
             gsCopy.currentGameStep = gs.currentGameStep;
             gsCopy.EndOfGame = gs.EndOfGame;
+            
+            gsCopy.obstacles.Clear();
+            gsCopy.obstacles.AddRange(gs.obstacles);
+
+            gsCopy.timer = gs.timer;
         }
 
         private static void CheckIfPlayerIsDead(ref GameStateData gs)
@@ -389,7 +437,7 @@ namespace Games.GameState
                                    projectile.position.z - projectile.radius >
                                    player2.playerPosition.z + player2.PlayerRadius))
                             {
-                                player2.playerPosition = new Vector3(gs.rdm.NextFloat(MIN_X, MAX_X), 0, gs.rdm.NextFloat(MIN_Z, MAX_Z));
+                                player2.playerPosition = new Vector3(NoObjectInObstacle(ref gs, true), 0, NoObjectInObstacle(ref gs, false));
             
                                 player2.PlayerLifeStock -= 1;
                                 player1.PlayerScore += 1000;
@@ -407,13 +455,48 @@ namespace Games.GameState
                                    player1.playerPosition.z - player1.PlayerRadius || projectile.position.z - projectile.radius >
                                    player1.playerPosition.z + player1.PlayerRadius))
                             {
-                                player1.playerPosition = new Vector3(gs.rdm.NextFloat(MIN_X, MAX_X), 0, gs.rdm.NextFloat(MIN_Z, MAX_Z));
+                                player1.playerPosition = new Vector3(NoObjectInObstacle(ref gs, true), 0, NoObjectInObstacle(ref gs, false));
             
                                 player1.PlayerLifeStock -= 1;
                                 player2.PlayerScore += 1000;
                                 player1.PlayerScore -= 2000;
                                 
                                 gs.players[0] = player1;
+                                gs.projectiles.RemoveAtSwapBack(i);
+                            }
+                            break;
+                        case 2:
+                            if (!(player1.IsUntouchable || projectile.position.x + projectile.radius <
+                                   player1.playerPosition.x - player1.PlayerRadius || projectile.position.x - projectile.radius >
+                                   player1.playerPosition.x + player1.PlayerRadius || projectile.position.z + projectile.radius <
+                                   player1.playerPosition.z - player1.PlayerRadius || projectile.position.z - projectile.radius >
+                                   player1.playerPosition.z + player1.PlayerRadius))
+                            {
+                                player1.playerPosition = new Vector3(NoObjectInObstacle(ref gs, true), 0, NoObjectInObstacle(ref gs, false));
+            
+                                player1.PlayerLifeStock -= 1;
+                                player2.PlayerScore += 1000;
+                                player1.PlayerScore -= 2000;
+                                
+                                gs.players[0] = player1;
+                                gs.projectiles.RemoveAtSwapBack(i);
+                            }
+                            else if (!(player2.IsUntouchable || projectile.position.x + projectile.radius <
+                                       player2.playerPosition.x - player2.PlayerRadius ||
+                                       projectile.position.x - projectile.radius >
+                                       player2.playerPosition.x + player2.PlayerRadius ||
+                                       projectile.position.z + projectile.radius <
+                                       player2.playerPosition.z - player2.PlayerRadius ||
+                                       projectile.position.z - projectile.radius >
+                                       player2.playerPosition.z + player2.PlayerRadius))
+                            {
+                                player2.playerPosition = new Vector3(NoObjectInObstacle(ref gs, true), 0, NoObjectInObstacle(ref gs, false));
+                                                 
+                                player2.PlayerLifeStock -= 1;
+                                player1.PlayerScore += 1000;
+                                player2.PlayerScore -= 2000;
+                                                                     
+                                gs.players[1] = player2;
                                 gs.projectiles.RemoveAtSwapBack(i);
                             }
                             break;

@@ -126,8 +126,20 @@ namespace Scripts.Games
                 ois.player2Exposer.playerAgent.players[1] = false;
                 ButtonSelector(3, 1);
             });
-            aStarAgentBtn[0].interactable = false;
-            aStarAgentBtn[1].interactable = false;
+            aStarAgentBtn[0].onClick.AddListener(delegate
+            {
+                agent1 = new AStarAgent();
+                ois.player1Exposer.playerAgent.players[0] = false;
+                ois.player2Exposer.playerAgent.players[0] = false;
+                ButtonSelector(4, 0);
+            });
+            aStarAgentBtn[1].onClick.AddListener(delegate
+            {
+                agent2 = new AStarAgent();
+                ois.player1Exposer.playerAgent.players[1] = false;
+                ois.player2Exposer.playerAgent.players[1] = false;
+                ButtonSelector(4, 1);
+            });
             qLearningAgentBtn[0].interactable = false;
             qLearningAgentBtn[1].interactable = false;
             
@@ -153,6 +165,8 @@ namespace Scripts.Games
             randomAgentBtn[idList].image.color = Color.white;
             randomRolloutAgentBtn[idList].image.color = Color.white;
             mctsAgentBtn[idList].image.color = Color.white;
+            aStarAgentBtn[idList].image.color = Color.white;
+            qLearningAgentBtn[idList].image.color = Color.white;
 
             switch (id)
             {
@@ -280,7 +294,7 @@ namespace Scripts.Games
             {
                 for (int i = projectiles.Count; i < gs.projectiles.Length; i++)
                 {
-                    AddNewProjectile(gs.projectiles[i].ownerId);
+                    AddNewProjectile(gs.projectiles[i].ownerId, i);
                 }
             }
 
@@ -291,9 +305,15 @@ namespace Scripts.Games
             }
         }
 
-        public void AddNewProjectile(int i)
+        public void AddNewProjectile(int idPlayer, int idProj)
         {
-            projectiles.Add(Instantiate(projectilePrefab, new Vector3(gs.players[i].playerPosition.x, gs.players[i].playerPosition.y, gs.players[i].playerPosition.z), Quaternion.identity));
+            projectiles.Add(idPlayer == 2
+                ? Instantiate(projectilePrefab,
+                    new Vector3(gs.projectiles[idProj].position.x, 1, gs.projectiles[idProj].position.z),
+                    Quaternion.identity)
+                : Instantiate(projectilePrefab,
+                    new Vector3(gs.players[idPlayer].playerPosition.x, gs.players[idPlayer].playerPosition.y,
+                        gs.players[idPlayer].playerPosition.z), Quaternion.identity));
         }
 
         public void SyncProjectilesView()
@@ -306,9 +326,13 @@ namespace Scripts.Games
                 {
                     projectiles[i].GetComponent<Renderer>().material.color = Color.blue;
                 }
-                else
+                else if(gs.projectiles[i].ownerId == 1)
                 {
                     projectiles[i].GetComponent<Renderer>().material.color = Color.red;
+                }
+                else
+                {
+                    projectiles[i].GetComponent<Renderer>().material.color = Color.yellow;
                 }
             }
         }
