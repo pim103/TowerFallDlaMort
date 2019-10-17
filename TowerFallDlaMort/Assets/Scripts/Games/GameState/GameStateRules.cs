@@ -241,8 +241,8 @@ namespace Games.GameState
             gs.currentGameStep++;
 
             CalculateScore(ref gs);
-            gs.timer -= Time.deltaTime;
-            TurretShoot(ref gs, 4);
+            //gs.timer -= Time.deltaTime;
+            //TurretShoot(ref gs, 4);
         }
 
         public static void TurretShoot(ref GameStateData gs, int nbShoot)
@@ -287,8 +287,11 @@ namespace Games.GameState
             newGs.rdm = gs.rdm;
             newGs.currentGameStep = gs.currentGameStep;
             newGs.EndOfGame = gs.EndOfGame;
+
+            newGs.timer = gs.timer;
             
-            
+            newGs.obstacles = new NativeList<ObstacleData>(MAX_OBSTACLE * 4, Allocator.Temp);
+            newGs.obstacles = gs.obstacles;
 
             return newGs;
         }
@@ -308,6 +311,11 @@ namespace Games.GameState
             gsCopy.rdm = gs.rdm;
             gsCopy.currentGameStep = gs.currentGameStep;
             gsCopy.EndOfGame = gs.EndOfGame;
+            
+            gsCopy.obstacles.Clear();
+            gsCopy.obstacles = gs.obstacles;
+
+            gsCopy.timer = gs.timer;
         }
 
         private static void CheckIfPlayerIsDead(ref GameStateData gs)
@@ -516,7 +524,7 @@ namespace Games.GameState
                     {
                         item.active = false;
                         gs.items[i] = item;
-                        player1.weapon = WeaponList.paint_weapon;
+                        //player1.weapon = WeaponList.paint_weapon;
                         gs.players[0] = player1;
                     }
                     if (!(item.position.x + item.radius <
@@ -530,7 +538,7 @@ namespace Games.GameState
                     {
                         item.active = false;
                         gs.items[i] = item;
-                        player2.weapon = WeaponList.paint_weapon;
+                        //player2.weapon = WeaponList.paint_weapon;
                         gs.players[1] = player2;
                     }
                 }
