@@ -377,7 +377,7 @@ namespace Scripts.Games
                 var item = gs.items[i];
                 item.type = typeNumber;
                 gs.items[i] = item;
-                Debug.Log("type d'item :" + gs.items[i].type);
+                //Debug.Log("type d'item :" + gs.items[i].type);
             } 
         }
     }
