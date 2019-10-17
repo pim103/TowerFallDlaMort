@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Games;
 using Games.Agents;
 using Games.GameState;
+using Scripts.Items;
 using Scripts.Players;
 using UnityEditor;
 using UnityEngine;
@@ -52,8 +53,8 @@ namespace Scripts.Games
         private GameStateData gs;
     
         private List<Transform> players = new List<Transform>();
-        private List<Transform> items = new List<Transform>();
-
+        
+        private List<GameObject> items = new List<GameObject>();
         private List<GameObject> projectiles = new List<GameObject>();
         private List<GameObject> obstacles = new List<GameObject>();
         
@@ -215,11 +216,12 @@ namespace Scripts.Games
 
             for (int i = 0; i < GameStateRules.MAX_ITEMS; i++)
             {
-                items.Add(ois.itemExposer[i].itemTransform);
+                items.Add(ois.itemExposer[i].ItemGameObject);
             }
                 
             GameStateRules.Init(ref gs);
             SetItemsPosition();
+            InitItemsType();
             PopObstacle();
         }
 
@@ -347,7 +349,7 @@ namespace Scripts.Games
         {
             for (int i = 0; i < GameStateRules.MAX_ITEMS; i++)
             {
-                items[i].rotation = Quaternion.Euler(gs.items[i].rotation);
+                items[i].transform.rotation = Quaternion.Euler(gs.items[i].rotation);
                 if (gs.items[i].active == false)
                 {
                     items[i].gameObject.SetActive(false);
@@ -359,11 +361,24 @@ namespace Scripts.Games
         {
             for (int i = 0; i < GameStateRules.MAX_ITEMS; i++)
             {
-                Vector3 currentPosition = items[i].position;
+                Vector3 currentPosition = items[i].transform.position;
                 currentPosition.x = gs.items[i].position.x;
                 currentPosition.z = gs.items[i].position.y;
-                items[i].position = currentPosition;
+                items[i].transform.position = currentPosition;
             }
+        }
+
+        public void InitItemsType()
+        {
+            for (int i = 0; i < GameStateRules.MAX_ITEMS; i++)
+            {
+                ItemExposer ie = items[i].GetComponent<ItemExposer>();
+                var typeNumber = ie.ItemTypeNumber;
+                var item = gs.items[i];
+                item.type = typeNumber;
+                gs.items[i] = item;
+                //Debug.Log("type d'item :" + gs.items[i].type);
+            } 
         }
     }
 }
