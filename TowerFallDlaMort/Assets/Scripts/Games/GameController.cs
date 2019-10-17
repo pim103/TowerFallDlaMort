@@ -207,6 +207,7 @@ namespace Scripts.Games
                 
             GameStateRules.Init(ref gs);
             SetItemsPosition();
+            InitItemsType();
             PopObstacle();
         }
 
@@ -343,12 +344,16 @@ namespace Scripts.Games
             }
         }
 
-        public void tellItemsType()
+        public void InitItemsType()
         {
             for (int i = 0; i < GameStateRules.MAX_ITEMS; i++)
             {
-                //ItemExposer itemExposer = items[i].GetComponents<ItemExposer>()
-                items[i].GetComponents<ItemExposer>();
+                ItemExposer ie = items[i].GetComponent<ItemExposer>();
+                var typeNumber = ie.ItemTypeNumber;
+                var item = gs.items[i];
+                item.type = typeNumber;
+                gs.items[i] = item;
+                Debug.Log("type d'item :" + gs.items[i].type);
             } 
         }
     }

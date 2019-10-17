@@ -159,7 +159,7 @@ namespace Games.GameState
                         NoObjectInObstacle()),
                     rotation = new Vector3(0, 0, 0),
                     //rotationSpeed = 10,
-                    rotationSpeedVector = new Vector3(5, 5, 5),
+                    rotationSpeedVector = new Vector3(0, 5, 0),
                     radius = 0.5f,
                     active = true
                 };
@@ -440,11 +440,7 @@ namespace Games.GameState
                           item.position.y - item.radius >
                           player1.playerPosition.z + player1.PlayerRadius))
                     {
-                        item.active = false;
-                        gs.items[i] = item;
-                        //if(GameController)
-                        player1.weapon = WeaponList.paint_weapon;
-                        gs.players[0] = player1;
+                        buffPlayer(ref gs, player1, item, i);
                     }
                     if (!(item.position.x + item.radius <
                           player2.playerPosition.x - player2.PlayerRadius ||
@@ -455,12 +451,34 @@ namespace Games.GameState
                           item.position.y - item.radius >
                           player2.playerPosition.z + player2.PlayerRadius))
                     {
-                        item.active = false;
-                        gs.items[i] = item;
-                        player2.weapon = WeaponList.paint_weapon;
-                        gs.players[1] = player2;
+                        buffPlayer(ref gs, player2, item, i);
                     }
                 }
+            }
+        }
+
+        public static void buffPlayer(ref GameStateData gs, PlayerData player, ItemsData item, int i)
+        {
+            if (item.active == true)
+            {
+                switch (item.type)
+                {
+                    case 0:
+                        player.PlayerLifeStock += 1;
+                        //Debug.Log("buff life");
+                        break;
+                    case 1:
+                        player.PlayerSpeed += 0.1f;
+                        //Debug.Log("buff speed");
+                        break;
+                    case 2:
+                        player.weapon = WeaponList.paint_weapon;
+                        //Debug.Log("buff weapon");
+                        break;
+                }
+                item.active = false;
+                gs.items[i] = item;               
+                gs.players[0] = player;
             }
         }
 
