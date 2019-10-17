@@ -69,9 +69,6 @@ namespace Games.Agents
                                 indexI = i;
                                 indexJ = j;
                             }
-
-                            //gsCopy.players.Dispose();
-                            //gsCopy.projectiles.Dispose();
                         }
                     }
                 }

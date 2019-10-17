@@ -125,8 +125,20 @@ namespace Scripts.Games
                 ois.player2Exposer.playerAgent.players[1] = false;
                 ButtonSelector(3, 1);
             });
-            aStarAgentBtn[0].interactable = false;
-            aStarAgentBtn[1].interactable = false;
+            aStarAgentBtn[0].onClick.AddListener(delegate
+            {
+                agent1 = new AStarAgent();
+                ois.player1Exposer.playerAgent.players[0] = false;
+                ois.player2Exposer.playerAgent.players[0] = false;
+                ButtonSelector(4, 0);
+            });
+            aStarAgentBtn[1].onClick.AddListener(delegate
+            {
+                agent2 = new AStarAgent();
+                ois.player1Exposer.playerAgent.players[1] = false;
+                ois.player2Exposer.playerAgent.players[1] = false;
+                ButtonSelector(4, 1);
+            });
             qLearningAgentBtn[0].interactable = false;
             qLearningAgentBtn[1].interactable = false;
             
@@ -152,6 +164,8 @@ namespace Scripts.Games
             randomAgentBtn[idList].image.color = Color.white;
             randomRolloutAgentBtn[idList].image.color = Color.white;
             mctsAgentBtn[idList].image.color = Color.white;
+            aStarAgentBtn[idList].image.color = Color.white;
+            qLearningAgentBtn[idList].image.color = Color.white;
 
             switch (id)
             {
