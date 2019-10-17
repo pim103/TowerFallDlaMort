@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using Games.Agents;
+using Scripts.Games;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
@@ -441,6 +442,7 @@ namespace Games.GameState
                     {
                         item.active = false;
                         gs.items[i] = item;
+                        //if(GameController)
                         player1.weapon = WeaponList.paint_weapon;
                         gs.players[0] = player1;
                     }

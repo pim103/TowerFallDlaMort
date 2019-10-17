@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 362707337086166348}
   - component: {fileID: 5219558140938294780}
   m_Layer: 0
-  m_Name: Item
+  m_Name: ItemSpeed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -107,3 +107,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemTransform: {fileID: 2151872259092095221}
   ItemGameObject: {fileID: 6698140459172845403}
+  ItemTypeNumber: 1

@@ -7,8 +7,8 @@ namespace Scripts.Items
     public class ItemExposer : MonoBehaviour
     {
         [SerializeField]
-        public Transform itemTransform;
-        [SerializeField]
         public GameObject ItemGameObject;
+        [SerializeField]
+        public int ItemTypeNumber;
     }
 }
