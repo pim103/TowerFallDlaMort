@@ -119,14 +119,32 @@ namespace Games.GameState
 
         private static void InitObstacles(ref GameStateData gs)
         {
-            for (int i = 0; i < MAX_OBSTACLE * 4; i++)
+            for (int i = 1; i < MAX_OBSTACLE + 1; i++)
             {
-                var obstacle = new ObstacleData
+                var obstacle1 = new ObstacleData
                 {
-                    position = new Vector3(0, 0, 0),
+                    position = new Vector3(0, 0, i),
                     radius = GameStateData.obstacleRadius
                 };
-                gs.obstacles.Add(obstacle);
+                var obstacle2 = new ObstacleData
+                {
+                    position = new Vector3(0, 0, -i),
+                    radius = GameStateData.obstacleRadius
+                };
+                var obstacle3 = new ObstacleData
+                {
+                    position = new Vector3(i, 0, 0),
+                    radius = GameStateData.obstacleRadius
+                };
+                var obstacle4 = new ObstacleData
+                {
+                    position = new Vector3(-i, 0, 0),
+                    radius = GameStateData.obstacleRadius
+                };
+                gs.obstacles.Add(obstacle1);
+                gs.obstacles.Add(obstacle2);
+                gs.obstacles.Add(obstacle3);
+                gs.obstacles.Add(obstacle4);
             }
         }
 
@@ -136,8 +154,8 @@ namespace Games.GameState
             {
                 var item = new ItemsData
                 {
-                    position = new Vector2(UnityEngine.Random.Range(-8.0f, 8.0f), 
-                        UnityEngine.Random.Range(-8.0f, 8.0f)),
+                    position = new Vector3(NoObjectInObstacle(), 
+                        NoObjectInObstacle()),
                     rotation = new Vector3(0, 0, 0),
                     //rotationSpeed = 10,
                     rotationSpeedVector = new Vector3(5, 5, 5),
@@ -147,6 +165,17 @@ namespace Games.GameState
                 gs.items.Add(item);
                 //Debug.Log(item.position);
             }
+        }
+        
+        private static float NoObjectInObstacle()
+        {
+            float nb = 0.0f;
+            do
+            {
+                nb = UnityEngine.Random.Range(-8.0f, 8.0f);
+            } while (nb >= -4 && nb <= 4);
+            
+            return nb;
         }
         
         // Fonction qui prend en entrée une action pour chaques joueurs,

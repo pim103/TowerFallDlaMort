@@ -211,22 +211,12 @@ namespace Scripts.Games
 
         public void PopObstacle()
         {
-            for (int i = 0; i < GameStateRules.MAX_OBSTACLE; i++)
+            for (int i = 0; i < GameStateRules.MAX_OBSTACLE * 4; i++)
             {
-                obstacles.Add(Instantiate(obstaclePrefab, new Vector3(i + 1, 0, 0f), Quaternion.identity));
-                obstacles.Add(Instantiate(obstaclePrefab, new Vector3(0, 0, i + 1), Quaternion.identity));
-                obstacles.Add(Instantiate(obstaclePrefab, new Vector3(-i - 1, 0, 0f), Quaternion.identity));
-                obstacles.Add(Instantiate(obstaclePrefab, new Vector3(0, 0, -i - 1), Quaternion.identity));
+                obstacles.Add(Instantiate(obstaclePrefab, gs.obstacles[i].position, Quaternion.identity));
             }
             
             //Debug.Log("GameController, GS OBS Length " + gs.obstacles.Length);
-
-            for (int i = 0; i < gs.obstacles.Length; i++)
-            {
-                var obstacleData = gs.obstacles[i];
-                obstacleData.position = obstacles[i].transform.position;
-                gs.obstacles[i] = obstacleData;
-            }
         }
 
         public void EndGame()
