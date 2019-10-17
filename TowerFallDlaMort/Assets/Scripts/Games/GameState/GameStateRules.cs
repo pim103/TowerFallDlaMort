@@ -291,7 +291,7 @@ namespace Games.GameState
             newGs.timer = gs.timer;
             
             newGs.obstacles = new NativeList<ObstacleData>(MAX_OBSTACLE * 4, Allocator.Temp);
-            newGs.obstacles = gs.obstacles;
+            newGs.obstacles.AddRange(gs.obstacles);
 
             return newGs;
         }
@@ -313,7 +313,7 @@ namespace Games.GameState
             gsCopy.EndOfGame = gs.EndOfGame;
             
             gsCopy.obstacles.Clear();
-            gsCopy.obstacles = gs.obstacles;
+            gsCopy.obstacles.AddRange(gs.obstacles);
 
             gsCopy.timer = gs.timer;
         }
