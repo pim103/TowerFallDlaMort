@@ -256,7 +256,7 @@ namespace Games.GameState
                 turretHasShoot = true;
             }
 
-            if ((int)gs.timer % 3 != 0)
+            if ((int)gs.timer % 5 != 0)
             {
                 turretHasShoot = false;
             }
