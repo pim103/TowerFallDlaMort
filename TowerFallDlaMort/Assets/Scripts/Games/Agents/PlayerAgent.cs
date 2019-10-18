@@ -16,6 +16,8 @@ namespace Scripts.Players
 
         private Intent intent;
         public bool[] players;
+        [SerializeField]
+        private ControlsAndroid controls;
 
         private bool hasTwoPlayer;
 
@@ -23,13 +25,73 @@ namespace Scripts.Players
         {
             intent = new Intent();
         }
-
+        
         public Intent Act(ref GameStateData gs, int id)
         {
             intent.moveIntent = ActionsAvailable.NONE;
             intent.actionIntent = ActionsAvailable.NONE;
             hasTwoPlayer = HasTwoPlayer(players);
-
+            //#if UNITY_ANDROID
+            if (!hasTwoPlayer)
+            {
+                //Debug.Log(controls.shootFoward[id]);
+                if (controls.shootFoward[id])
+                {
+                    intent.actionIntent = ActionsAvailable.SHOT_FORWARD;
+                }
+                else if (controls.shootBack[id])
+                {
+                    intent.actionIntent = ActionsAvailable.SHOT_BACK;
+                }
+                else if (controls.shootLeft[id])
+                {
+                    intent.actionIntent = ActionsAvailable.SHOT_LEFT;
+                }
+                else if (controls.shootRight[id])
+                {
+                    intent.actionIntent = ActionsAvailable.SHOT_RIGHT;
+                }
+                
+                if (controls.moveFoward[id])
+                {
+                    if (controls.moveLeft[id])
+                    {
+                        intent.moveIntent = ActionsAvailable.MOVE_FORWARD_RIGHT;
+                    }
+                    else if (controls.moveRight[id])
+                    {
+                        intent.moveIntent = ActionsAvailable.MOVE_FORWARD_LEFT;
+                    }
+                    else
+                    {
+                        intent.moveIntent = ActionsAvailable.MOVE_FORWARD;
+                    }
+                }
+                else if (controls.moveBack[id])
+                {
+                    if (controls.moveRight[id])
+                    {
+                        intent.moveIntent = ActionsAvailable.MOVE_BACK_RIGHT;
+                    }
+                    else if (controls.moveLeft[id])
+                    {
+                        intent.moveIntent = ActionsAvailable.MOVE_BACK_LEFT;
+                    }
+                    else
+                    {
+                        intent.moveIntent = ActionsAvailable.MOVE_BACK;
+                    }
+                }
+                else if (controls.moveLeft[id])
+                {
+                    intent.moveIntent = ActionsAvailable.MOVE_LEFT;
+                }
+                else if (controls.moveRight[id])
+                {
+                    intent.moveIntent = ActionsAvailable.MOVE_RIGHT;
+                }
+            }
+            
             if (!hasTwoPlayer)
             {
                 if (Input.GetKey(KeyCode.UpArrow))
@@ -208,6 +270,8 @@ namespace Scripts.Players
                     }
                 }
             }
+            //#endif
+            
 
             return intent;
         }

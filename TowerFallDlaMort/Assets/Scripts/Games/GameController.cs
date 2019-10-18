@@ -21,6 +21,20 @@ namespace Scripts.Games
         // Time left before the end
         // Value in seconds
         private const int GAME_TIME = 500;
+        [SerializeField]
+        private GameObject[] PlayerGUI;
+        [SerializeField]
+        private Button[] OnePlayerButtonsMovement;
+        [SerializeField]
+        private Button[] OnePlayerButtonsActions;
+        [SerializeField]
+        private Button[] Player1ButtonsMovement;
+        [SerializeField]
+        private Button[] Player1ButtonsActions;
+        [SerializeField]
+        private Button[] Player2ButtonsMovement;
+        [SerializeField]
+        private Button[] Player2ButtonsActions;
 
         [SerializeField]
         private MenuController menuController;
@@ -56,7 +70,9 @@ namespace Scripts.Games
         private List<Transform> players = new List<Transform>();
         
         private List<GameObject> items = new List<GameObject>();
-        private List<GameObject> projectiles = new List<GameObject>();
+        public List<GameObject> projectiles;
+        public int amountOfProjectilesToPool;
+        public int amountOfProjectilesToPooled = 0;
         private List<GameObject> obstacles = new List<GameObject>();
         
         private Agent agent1;
@@ -69,6 +85,14 @@ namespace Scripts.Games
 
         private void Start()
         {
+            projectiles = new List<GameObject>();
+            for (int i = 0; i < amountOfProjectilesToPool; i++) {
+                GameObject projectile = Instantiate(projectilePrefab);
+                projectile.SetActive(false); 
+                projectiles.Add(projectile);
+            }
+            
+            
             humanAgentBtn[0].onClick.AddListener(delegate
             {
                 agent1 = ois.player1Exposer.playerAgent;
@@ -207,6 +231,18 @@ namespace Scripts.Games
 
         public void InitStartGame(bool enablePaintWeapon)
         {
+            #if UNITY_ANDROID
+            if (ois.player1Exposer.playerAgent.players[0] && ois.player1Exposer.playerAgent.players[1])
+            {
+                PlayerGUI[0].SetActive(false);
+                PlayerGUI[1].SetActive(true);
+            }
+            else
+            {
+                PlayerGUI[0].SetActive(true);
+                PlayerGUI[1].SetActive(false);
+            }
+            #endif
             // TODO : reset position of players and to reset all values of intent
             gameIsStart = true;
             timer = StartCoroutine(CounterTimeLeft());
@@ -293,30 +329,31 @@ namespace Scripts.Games
 
         public void SyncNumbersOfProjectiles()
         {   
-            if (projectiles.Count < gs.projectiles.Length)
+            
+            if (amountOfProjectilesToPooled < gs.projectiles.Length)
             {
-                for (int i = projectiles.Count; i < gs.projectiles.Length; i++)
+                for (int i = amountOfProjectilesToPooled; i < gs.projectiles.Length; i++)
                 {
+                    amountOfProjectilesToPooled++;
                     AddNewProjectile(gs.projectiles[i].ownerId, i);
                 }
             }
 
-            for (int i = 0; i < projectiles.Count - gs.projectiles.Length; i++)
+            for (int i = 0; i < amountOfProjectilesToPooled - gs.projectiles.Length; i++)
             {
-                Destroy(projectiles[projectiles.Count - 1]);
-                projectiles.RemoveAt(projectiles.Count - 1);
+                //Destroy(projectiles[projectiles.Count - 1]);
+                projectiles[amountOfProjectilesToPooled - 1].SetActive(false);
+                amountOfProjectilesToPooled--;
             }
         }
 
         public void AddNewProjectile(int idPlayer, int idProj)
         {
-            projectiles.Add(idPlayer == 2
-                ? Instantiate(projectilePrefab,
-                    new Vector3(gs.projectiles[idProj].position.x, 1, gs.projectiles[idProj].position.z),
-                    Quaternion.identity)
-                : Instantiate(projectilePrefab,
-                    new Vector3(gs.players[idPlayer].playerPosition.x, gs.players[idPlayer].playerPosition.y,
-                        gs.players[idPlayer].playerPosition.z), Quaternion.identity));
+            GameObject bullet = ObjectPooler.sharedInstance.GetPooledObject();
+
+            bullet.transform.position =
+                (idPlayer == 2) ? gs.projectiles[idProj].position : gs.players[idPlayer].playerPosition;
+            bullet.SetActive(true);
         }
 
         public void SyncProjectilesView()
