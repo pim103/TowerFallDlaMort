@@ -422,15 +422,7 @@ namespace Games.GameState
                 {
                     //bool isDestroyed = false;
                     var projectile = gs.projectiles[i];
-<<<<<<< HEAD
-                    //isDestroyed = (CollisionTriggerObstacles(ref gs, false, i, ActionsAvailable.NONE)) ? true : false;
-=======
-                    /*isDestroyed = (CollisionTriggerObstacles(ref gs, false, i, ActionsAvailable.NONE)) ? true : false;
->>>>>>> Interfaces Android Push
-                    if (isDestroyed)
-                    {
-                        break;
-                    }*/
+
                     switch (projectile.ownerId)
                     {
                         case 0:
@@ -560,15 +552,10 @@ namespace Games.GameState
                         player.PlayerSpeed += 0.1f;
                         //Debug.Log("buff speed");
                         break;
-<<<<<<< HEAD
                     case 2:
                         //player.weapon = WeaponList.paint_weapon;
-=======
-                    /*case 2:
-                        player.weapon = WeaponList.paint_weapon;
->>>>>>> Interfaces Android Push
                         //Debug.Log("buff weapon");
-                        break;*/
+                        break;
                 }
                 item.active = false;
                 gs.items[i] = item;               
