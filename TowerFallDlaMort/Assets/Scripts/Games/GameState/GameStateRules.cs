@@ -477,7 +477,7 @@ namespace Games.GameState
                                 player1.playerPosition = new Vector3(NoObjectInObstacle(ref gs, true), 0, NoObjectInObstacle(ref gs, false));
             
                                 player1.PlayerLifeStock -= 1;
-                                player2.PlayerScore += 1000;
+                                //player2.PlayerScore += 1000;
                                 player1.PlayerScore -= 2000;
                                 
                                 gs.players[0] = player1;
@@ -495,7 +495,7 @@ namespace Games.GameState
                                 player2.playerPosition = new Vector3(NoObjectInObstacle(ref gs, true), 0, NoObjectInObstacle(ref gs, false));
                                                  
                                 player2.PlayerLifeStock -= 1;
-                                player1.PlayerScore += 1000;
+                                //player1.PlayerScore += 1000;
                                 player2.PlayerScore -= 2000;
                                                                      
                                 gs.players[1] = player2;
@@ -557,7 +557,7 @@ namespace Games.GameState
                         //Debug.Log("buff speed");
                         break;
                     case 2:
-                        player.weapon = WeaponList.paint_weapon;
+                        //player.weapon = WeaponList.paint_weapon;
                         //Debug.Log("buff weapon");
                         break;
                 }
@@ -892,6 +892,17 @@ namespace Games.GameState
 
             gs.players[0] = player1Data;
             gs.players[1] = player2Data;
+        }
+        
+        public static long GetHashCode(ref GameStateData gs)
+        {
+            var hash = 0L;
+            hash = (long) math.round(math.clamp(gs.players[0].playerPosition.x, -9.99999f, 9.99999f) + 10) + 
+                   100* (long) math.round(math.clamp(gs.players[0].playerPosition.z, -9.99999f, 9.99999f) + 10);
+            hash+= 10000*(long) math.round(math.clamp(gs.players[1].playerPosition.x, -9.99999f, 9.99999f) + 10) +
+                   1000000 * (long) math.round(math.clamp(gs.players[1].playerPosition.z, -9.99999f, 9.99999f) + 10);
+
+            return hash;
         }
     }
 }
