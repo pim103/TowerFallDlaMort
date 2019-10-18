@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using Games.GameState;
 using JetBrains.Annotations;
 using Unity.Collections;
@@ -27,93 +28,8 @@ namespace Games.Agents
             public int z;
             public int f;
             public int g;
-            public int h;
-            public Location parent;
         }
 
-        private static List<Location> GetAvailableLocations(int x, int z, ref GameStateData gs, int id)
-        {
-            var locations = new List<Location>()
-            {
-                // UP
-                new Location { x = x + 1, z = z, f = 100},
-                // BACK
-                new Location { x = x - 1, z = z, f = 100},
-                // LEFT
-                new Location { x = x, z = z - 1, f = 100},
-                // RIGHT
-                new Location { x = x, z = z + 1, f = 100},
-                // UP_LEFT
-                new Location { x = x + 1, z = z - 1, f = 100},
-                // UP_RIGHT
-                new Location { x = x + 1, z = z + 1, f = 100},
-                // BACK_LEFT
-                new Location { x = x - 1, z = z - 1, f = 100},
-                // BACK_RIGHT
-                new Location { x = x - 1, z = z + 1, f = 100},
-            };
-
-            /*for (int i = 0; i < locations.Count; i++)
-            {
-                if (locations[i].x < GameStateRules.MIN_X)
-                {
-                    locations[i].x = GameStateRules.MAX_X - 1;
-                }
-                else if (locations[i].x > GameStateRules.MAX_X)
-                {
-                    locations[i].x = GameStateRules.MIN_X + 1;
-                }
-
-                if (locations[i].z < GameStateRules.MIN_Z)
-                {
-                    locations[i].z = GameStateRules.MAX_Z - 1;
-                }
-                else if (locations[i].z > GameStateRules.MAX_Z)
-                {
-                    locations[i].z = GameStateRules.MIN_Z + 1;
-                }
-            }*/
-
-            /*
-            for (int i = 0; i < gs.projectiles.Length; i++)
-            {
-                var proj = gs.projectiles[i];
-                var locationIndex = locations.FindIndex(l => 
-                    l.x == (int)proj.position.x && (int)proj.position.x != startX && 
-                    l.z == (int)proj.position.z && (int)proj.position.z != startZ);
-                
-                if (locationIndex >= 0)
-                {
-                    locations[locationIndex].f = 10000;
-                }
-            }
-
-            var location = locations.FindAll(l => 
-                (l.x == 0 && l.z == 0) || 
-                (l.x == 0 && l.z == -1) || 
-                (l.x == 0 && l.z == -2) || 
-                (l.x == 0 && l.z == -3) ||
-                (l.x == 0 && l.z == -4) ||
-                (l.x == 0 && l.z == -5) || 
-                (l.x == 0 && l.z == -6) || 
-                (l.x == 0 && l.z == -7) ||
-                (l.x == 0 && l.z == -8) ||
-                (l.x == 0 && l.z == -9) ||
-                (l.x == -1 && l.z == -10) || 
-                (l.x == -1 && l.z == -11) || 
-                (l.x == -1 && l.z == -12) ||
-                (l.x == -1 && l.z == -13) ||
-                (l.x == -1 && l.z == -14) ||
-                (l.x == -1 && l.z == -15) 
-            );
-            foreach (var loc in location)
-            {
-                locations.Remove(loc);
-            }*/
-
-            return locations;
-        }
-        
         public struct AStartJob: IJob
         {
             public GameStateData gs;
@@ -141,6 +57,24 @@ namespace Games.Agents
                 }
 
                 return indexes;
+            }
+
+            private bool CheckProxProj(ref GameStateData gs, int targetX, int targetZ, int sourceX, int sourceZ, int idPlayer)
+            {
+                bool canGo = true;
+                
+                for (int i = 0; i < gs.projectiles.Length; i++)
+                {
+                    var projX = (int)gs.projectiles[i].position.x + 10;
+                    var projZ = (int)gs.projectiles[i].position.z + 10;
+
+                    if (targetX == projX && targetZ == projZ && sourceX != projX && sourceZ != projZ && gs.projectiles[i].ownerId != idPlayer)
+                    {
+                        canGo = false;
+                    }
+                }
+
+                return canGo;
             }
             
             public void Execute()
@@ -210,7 +144,7 @@ namespace Games.Agents
                     int[] ids = GetLowestScore(openList);
                     Nmin = openList[ids[0]][ids[1]];
 
-                    if ( (ids[0] < 19 && ids[1] > 0) && openList[ids[0] + 1][ids[1] - 1].g == 0)
+                    if (CheckProxProj(ref gs, ids[0] + 1, ids[1] - 1, targetX, targetZ, idPlayer) && (ids[0] < 19 && ids[1] > 0) && openList[ids[0] + 1][ids[1] - 1].g == 0)
                     {
                         openList[ids[0] + 1][ids[1] - 1].g = openList[ids[0]][ids[1]].g + 1;
                         openList[ids[0] + 1][ids[1] - 1].f = openList[ids[0] + 1][ids[1] - 1].g + ComputeH(ids[0] + 1, ids[1] - 1, targetX, targetZ);
@@ -220,17 +154,19 @@ namespace Games.Agents
                         }
                     }
 
-                    if ((ids[0] < 19) && openList[ids[0] + 1][ids[1]].g == 0)
+                    if (CheckProxProj(ref gs, ids[0] + 1, ids[1], targetX, targetZ, idPlayer) && (ids[0] < 19) && openList[ids[0] + 1][ids[1]].g == 0)
                     {
                         openList[ids[0] + 1][ids[1]].g = openList[ids[0]][ids[1]].g + 1;
                         openList[ids[0] + 1][ids[1]].f = openList[ids[0] + 1][ids[1]].g + 1 + ComputeH(ids[0] + 1, ids[1], targetX, targetZ);
                         if (ids[0] + 1 >= 9 && ids[0] + 1 <= 10 && (ids[1] >= 5 && ids[1] <= 15) || (ids[0] + 1 >= 5 && ids[0] + 1 <= 15) && ids[1] <= 10 && ids[1] >= 9)
                         {
+                            
+                            intent[1] = ActionsAvailable.SHOT_RIGHT;
                             openList[ids[0] + 1][ids[1]].f = 222222;
                         }
                     }
 
-                    if ((ids[0] < 19 && ids[1] < 19) && openList[ids[0] + 1][ids[1] + 1].g == 0)
+                    if (CheckProxProj(ref gs, ids[0] + 1, ids[1] + 1, targetX, targetZ, idPlayer) && (ids[0] < 19 && ids[1] < 19) && openList[ids[0] + 1][ids[1] + 1].g == 0)
                     {
                         openList[ids[0] + 1][ids[1] + 1].g = openList[ids[0]][ids[1]].g + 1;
                         openList[ids[0] + 1][ids[1] + 1].f = openList[ids[0] + 1][ids[1] + 1].g + 1 + ComputeH(ids[0] + 1, ids[1] + 1, targetX, targetZ);
@@ -240,26 +176,29 @@ namespace Games.Agents
                         }
                     }
 
-                    if ((ids[1] > 0) && openList[ids[0]][ids[1] - 1].g == 0)
+                    if (CheckProxProj(ref gs, ids[0], ids[1] - 1, targetX, targetZ, idPlayer) && (ids[1] > 0) && openList[ids[0]][ids[1] - 1].g == 0)
                     {
                         openList[ids[0]][ids[1] - 1].g = openList[ids[0]][ids[1]].g + 1;
                         openList[ids[0]][ids[1] - 1].f = openList[ids[0]][ids[1] - 1].g + 1 + ComputeH(ids[0], ids[1] - 1, targetX, targetZ);
                         if (ids[0] <= 10 && ids[0] >= 9 && ids[1] - 1 >= 5 && ids[1] - 1 <= 15 || ids[1] - 1 >= 9 && ids[1] - 1 <= 10 && ids[0] >= 5 && ids[0] <= 15)
                         {
+                            intent[1] = ActionsAvailable.SHOT_BACK;
                             openList[ids[0]][ids[1] - 1].f = 222222;
                         }
                     }
                     
-                    if ((ids[1] < 19) && openList[ids[0]][ids[1] + 1].g == 0)
+                    if (CheckProxProj(ref gs, ids[0], ids[1] + 1, targetX, targetZ, idPlayer) && (ids[1] < 19) && openList[ids[0]][ids[1] + 1].g == 0)
                     {
                         openList[ids[0]][ids[1] + 1].g = openList[ids[0]][ids[1]].g + 1;
                         openList[ids[0]][ids[1] + 1].f = openList[ids[0]][ids[1] + 1].g + 1 + ComputeH(ids[0], ids[1] + 1, targetX, targetZ);
-                        if (ids[0] >= 9 && ids[0] <= 10 && ids[1] + 1 >= 5 && ids[1] + 1 <= 15 || ids[1] + 1 <= 10 && ids[1] + 1 >= 9 && ids[0] >= 5 && ids[0] <= 15)                        {
+                        if (ids[0] >= 9 && ids[0] <= 10 && ids[1] + 1 >= 5 && ids[1] + 1 <= 15 || ids[1] + 1 <= 10 && ids[1] + 1 >= 9 && ids[0] >= 5 && ids[0] <= 15) 
+                        {
+                            intent[1] = ActionsAvailable.SHOT_FORWARD;
                             openList[ids[0]][ids[1] + 1].f = 222222;
                         }
                     }
 
-                    if ((ids[0] > 0 && ids[1] > 0) && openList[ids[0] - 1][ids[1] - 1].g == 0)
+                    if (CheckProxProj(ref gs, ids[0] - 1, ids[1] - 1, targetX, targetZ, idPlayer) && (ids[0] > 0 && ids[1] > 0) && openList[ids[0] - 1][ids[1] - 1].g == 0)
                     {
                         openList[ids[0] - 1][ids[1] - 1].g = openList[ids[0]][ids[1]].g + 1;
                         openList[ids[0] - 1][ids[1] - 1].f = openList[ids[0] - 1][ids[1] - 1].g + 1 + ComputeH(ids[0] - 1, ids[1] - 1, targetX, targetZ);
@@ -269,17 +208,18 @@ namespace Games.Agents
                         }
                     }
 
-                    if ((ids[0] > 0) && openList[ids[0] - 1][ids[1]].g == 0)
+                    if (CheckProxProj(ref gs, ids[0] - 1, ids[1], targetX, targetZ, idPlayer) && (ids[0] > 0) && openList[ids[0] - 1][ids[1]].g == 0)
                     {
                         openList[ids[0] - 1][ids[1]].g = openList[ids[0]][ids[1]].g + 1;
                         openList[ids[0] - 1][ids[1]].f = openList[ids[0] - 1][ids[1]].g + 1 + ComputeH(ids[0] - 1, ids[1], targetX, targetZ);
                         if (ids[0] - 1 <= 10 && ids[0] - 1 >= 9 && ids[1] >= 5 && ids[1] <= 15 || ids[1] <= 10 && ids[1] >= 9 && ids[0] - 1 >= 5 && ids[0] - 1 <= 15)
                         {
+                            intent[1] = ActionsAvailable.SHOT_LEFT;
                             openList[ids[0] - 1][ids[1]].f = 222222;
                         }
                     }
 
-                    if ((ids[0] > 0 && ids[1] < 19) && openList[ids[0] - 1][ids[1] + 1].g == 0)
+                    if (CheckProxProj(ref gs, ids[0] - 1, ids[1] + 1, targetX, targetZ, idPlayer) && (ids[0] > 0 && ids[1] < 19) && openList[ids[0] - 1][ids[1] + 1].g == 0)
                     {
                         openList[ids[0] - 1][ids[1] + 1].g = openList[ids[0]][ids[1]].g + 1;
                         openList[ids[0] - 1][ids[1] + 1].f = openList[ids[0] - 1][ids[1] + 1].g + 1 + ComputeH(ids[0] - 1, ids[1] + 1, targetX, targetZ);
@@ -345,10 +285,12 @@ namespace Games.Agents
                     if (loc.z > start.z)
                     {
                         intent[0] = ActionsAvailable.MOVE_FORWARD;
+                        intent[1] = ActionsAvailable.SHOT_FORWARD;
                     }
                     else if (loc.z < start.z)
                     {
                         intent[0] = ActionsAvailable.MOVE_BACK;
+                        intent[1] = ActionsAvailable.SHOT_BACK;
                     }
                 }
                 else if (loc.x > start.x)
@@ -364,6 +306,7 @@ namespace Games.Agents
                     else
                     {
                         intent[0] = ActionsAvailable.MOVE_RIGHT;
+                        intent[1] = ActionsAvailable.SHOT_RIGHT;
                     }
                 }
                 else
@@ -379,136 +322,9 @@ namespace Games.Agents
                     else
                     {
                         intent[0] = ActionsAvailable.MOVE_LEFT;
+                        intent[1] = ActionsAvailable.SHOT_LEFT;
                     }
                 }
-
-                //Debug.Log("Movement needed : " + loc.x + " " + loc.z + " Start : " + closedList[0].x + " " + closedList[0].z);
-
-                /*
-                Location current = new Location();
-
-                var target = new Location
-                {
-                    x = (int)gs.players[idTarget].playerPosition.x,
-                    z = (int)gs.players[idTarget].playerPosition.z
-                };
-                
-                var closeList = new List<Location>();
-                
-                int g = 0;
-                
-                openList.Add(start);
-
-                while (openList.Count > 0)
-                {
-                    var lowest = openList.Min(l => l.f);
-                    current = openList.FindLast(l => l.f == lowest);
-                    closeList.Add(current);
-                    openList.Remove(current);
-
-                    var destination = closeList.FirstOrDefault(l => l.x == target.x && l.z == target.z);
-                    if (destination != null)
-                    {
-                        break;
-                    }
-
-                    var availableLocations = GetAvailableLocations(current.x, current.z, start.x, start.z, ref gs, idPlayer);
-                    for (int i = 0; i < availableLocations.Count; i++)
-                    {
-                        var location = availableLocations[i];
-
-                        if (location.f > 100)
-                        {
-                            Debug.Log("Oulah un proj");
-                            continue;
-                        }
-                        
-                        if (closeList.FirstOrDefault(l =>
-                            l.x == location.x && l.z == location.z) != null)
-                        {
-                            continue;
-                        }
-                        
-                        if (openList.FirstOrDefault(l =>
-                            l.x == location.x && l.z == location.z) != null)
-                        {
-                            if (g + location.h < location.f)
-                            {
-                                location.g = g;
-                                location.f = location.g + location.h;
-                                location.parent = current;
-                            }
-                        }
-                        else
-                        {
-                            location.g = g;
-                            location.h = ComputeH(location.x, location.z, target.x, target.z);
-                            location.f = location.g + location.h;
-                            location.parent = current;
-                            
-                            openList.Add(location);
-                        }
-                    }
-                }
-
-                //openList.Clear();
-
-                Location lastCurrent = new Location();
-                while (current.parent != null)
-                {
-                    lastCurrent = current;
-                    current = current.parent;
-                }
-
-                intent[0] = ActionsAvailable.NONE;
-                intent[1] = ActionsAvailable.NONE;
-
-                if (lastCurrent == null)
-                {
-                    return;
-                }
-
-                if (lastCurrent.x == start.x)
-                {
-                    if (lastCurrent.z > target.z)
-                    {
-                        intent[0] = ActionsAvailable.MOVE_BACK;
-                    }
-                    else if (lastCurrent.z < target.z)
-                    {
-                        intent[0] = ActionsAvailable.MOVE_FORWARD;
-                    }
-                }
-                else if (lastCurrent.x > target.x)
-                {
-                    if (lastCurrent.z > target.z)
-                    {
-                        intent[0] = ActionsAvailable.MOVE_BACK_LEFT;
-                    }
-                    else if (lastCurrent.z < target.z)
-                    {
-                        intent[0] = ActionsAvailable.MOVE_FORWARD_LEFT;
-                    }
-                    else
-                    {
-                        intent[0] = ActionsAvailable.MOVE_LEFT;
-                    }
-                }
-                else
-                {
-                    if (lastCurrent.z > target.z)
-                    {
-                        intent[0] = ActionsAvailable.MOVE_BACK_RIGHT;
-                    }
-                    else if (lastCurrent.z < target.z)
-                    {
-                        intent[0] = ActionsAvailable.MOVE_FORWARD_RIGHT;
-                    }
-                    else
-                    {
-                        intent[0] = ActionsAvailable.MOVE_RIGHT;
-                    }
-                }*/
             }
         }
         

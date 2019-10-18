@@ -15,6 +15,9 @@ namespace Scripts.Menus
 
         [SerializeField]
         private Button playButton;
+        
+        [SerializeField] 
+        private Toggle enablePaintWeapon;
 
         private void Start()
         {
@@ -24,7 +27,7 @@ namespace Scripts.Menus
 
         private void WantToStartGame()
         {
-            menuController.StartGame();
+            menuController.StartGame(enablePaintWeapon.isOn);
         }
 
         private void BackButton()

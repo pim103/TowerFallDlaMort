@@ -68,12 +68,12 @@ namespace Scripts.Menus
             }
         }
 
-        public void StartGame()
+        public void StartGame(bool enablePaintWeapon)
         {
             gameContainer.SetActive(true);
             menuContainer.SetActive(false);
 
-            gameController.InitStartGame();
+            gameController.InitStartGame(enablePaintWeapon);
         }
 
         public void ReturnMenu()

@@ -78,7 +78,7 @@ namespace Games.GameState
         }
         
         // Fonction qui initialise le gameState
-        public static void Init(ref GameStateData gs)
+        public static void Init(ref GameStateData gs, bool enablePaintWeapon)
         {
             // On initialise 2 NativeList pour stocker les 2 players et 100 projectiles
             gs.players = new NativeList<PlayerData>(MAX_PLAYERS, Allocator.Persistent);
@@ -92,16 +92,18 @@ namespace Games.GameState
             gs.obstacles = new NativeList<ObstacleData>(MAX_OBSTACLE * 4, Allocator.Persistent);
             gs.timer = 99;
             
-            InitPlayers(ref gs);
+            InitPlayers(ref gs, enablePaintWeapon);
             InitItems(ref gs);
             InitObstacles(ref gs);
             // On crée un object en initialisant sa position et sa rotation
 
         }
 
-        private static void InitPlayers(ref GameStateData gs)
+        private static void InitPlayers(ref GameStateData gs, bool enablePaintWeapon)
         {
             // On crée les 2 joueurs en initialisant leurs positions respectives
+            Weapon weapon = enablePaintWeapon ? WeaponList.paint_weapon : WeaponList.basic_weapon;
+
             for (int i = 0; i < MAX_PLAYERS; i++)
             {
                 var player = new PlayerData
@@ -110,7 +112,7 @@ namespace Games.GameState
                     PlayerSpeed = 0.2f,
                     PlayerRadius = 0.5f,
                     PlayerScore = 0,
-                    weapon = WeaponList.basic_weapon,
+                    weapon = weapon,
                     PlayerLifeStock = 3,
                     IsUntouchable = false
                 };
@@ -223,12 +225,12 @@ namespace Games.GameState
             gs.projectiles.Clear();
             gs.projectiles.AddRange(job.projectilesList);
             job.projectilesList.Dispose();
-            
+
             gs.currentGameStep++;
 
             CalculateScore(ref gs);
             gs.timer -= Time.deltaTime;
-            TurretShoot(ref gs, 4);
+            //TurretShoot(ref gs, 4);
         }
         
         public static void Step(ref GameStateData gs, Intent player1Actions, int id)
@@ -237,7 +239,7 @@ namespace Games.GameState
             UpdateProjectiles(ref gs);
             CollisionTriggerProjectile(ref gs);
             CheckIfPlayerIsDead(ref gs);
-            CheckIfTimerHasEnded(ref gs);
+            //CheckIfTimerHasEnded(ref gs);
             
             gs.currentGameStep++;
 
@@ -420,7 +422,7 @@ namespace Games.GameState
                 {
                     bool isDestroyed = false;
                     var projectile = gs.projectiles[i];
-                    isDestroyed = (CollisionTriggerObstacles(ref gs, false, i, ActionsAvailable.NONE)) ? true : false;
+                    //isDestroyed = (CollisionTriggerObstacles(ref gs, false, i, ActionsAvailable.NONE)) ? true : false;
                     if (isDestroyed)
                     {
                         break;
@@ -504,7 +506,7 @@ namespace Games.GameState
                 }
             }
 
-            CheckItemsCollisionTrigger(ref gs, player1, player2);
+            //CheckItemsCollisionTrigger(ref gs, player1, player2);
         }
 
         public static void CheckItemsCollisionTrigger(ref GameStateData gs, PlayerData player1, PlayerData player2)
@@ -567,166 +569,166 @@ namespace Games.GameState
 
         public static bool CollisionTriggerObstacles(ref GameStateData gs, bool isPlayer, int id, ActionsAvailable action)
         {
-            switch (isPlayer)
+            if (isPlayer)
             {
-                case true:
-                    var playerData = gs.players[id];
-                    for (int i = 0; i < gs.obstacles.Length; i++)
+                var playerData = gs.players[id];
+                for (int i = 0; i < gs.obstacles.Length; i++)
+                {
+                    var obstacle = gs.obstacles[i];
+                    switch (action)
                     {
-                        var obstacle = gs.obstacles[i];
-                        switch (action)
-                        {
-                            case ActionsAvailable.MOVE_FORWARD:
-                                if (!(playerData.playerPosition.x + playerData.PlayerRadius <
-                                      obstacle.position.x - obstacle.radius ||
-                                      playerData.playerPosition.x - playerData.PlayerRadius >
-                                      obstacle.position.x + obstacle.radius ||
-                                      playerData.playerPosition.z + playerData.PlayerRadius + 0.2 <
-                                      obstacle.position.z - obstacle.radius ||
-                                      playerData.playerPosition.z - playerData.PlayerRadius >
-                                      obstacle.position.z + obstacle.radius) && 
-                                    (playerData.playerPosition + Vector3.forward).z - playerData.PlayerRadius 
-                                    < obstacle.position.z + obstacle.radius)
-                                {
-                                    return true;
-                                }
-                                break;
-                            case ActionsAvailable.MOVE_BACK:
-                                if (!(playerData.playerPosition.x + playerData.PlayerRadius <
-                                      obstacle.position.x - obstacle.radius ||
-                                      playerData.playerPosition.x - playerData.PlayerRadius >
-                                      obstacle.position.x + obstacle.radius ||
-                                      playerData.playerPosition.z + playerData.PlayerRadius <
-                                      obstacle.position.z - obstacle.radius ||
-                                      playerData.playerPosition.z - playerData.PlayerRadius - 0.2 >
-                                      obstacle.position.z + obstacle.radius) && 
-                                    (playerData.playerPosition + Vector3.back).z + playerData.PlayerRadius 
-                                    > obstacle.position.z - obstacle.radius)
-                                {
-                                    return true;
-                                }
-                                break;
-                            case ActionsAvailable.MOVE_LEFT:
-                                if (!(playerData.playerPosition.x + playerData.PlayerRadius <
-                                      obstacle.position.x - obstacle.radius ||
-                                      playerData.playerPosition.x - playerData.PlayerRadius - 0.2 >
-                                      obstacle.position.x + obstacle.radius ||
-                                      playerData.playerPosition.z + playerData.PlayerRadius <
-                                      obstacle.position.z - obstacle.radius ||
-                                      playerData.playerPosition.z - playerData.PlayerRadius >
-                                      obstacle.position.z + obstacle.radius) && 
-                                    (playerData.playerPosition + Vector3.left).x + playerData.PlayerRadius 
-                                    > obstacle.position.x - obstacle.radius)
-                                {
-                                    return true;
-                                }
-                                break;
-                            case ActionsAvailable.MOVE_RIGHT:
-                                if (!(playerData.playerPosition.x + playerData.PlayerRadius + 0.2 <
-                                      obstacle.position.x - obstacle.radius ||
-                                      playerData.playerPosition.x - playerData.PlayerRadius >
-                                      obstacle.position.x + obstacle.radius ||
-                                      playerData.playerPosition.z + playerData.PlayerRadius <
-                                      obstacle.position.z - obstacle.radius ||
-                                      playerData.playerPosition.z - playerData.PlayerRadius >
-                                      obstacle.position.z + obstacle.radius) && 
-                                    (playerData.playerPosition + Vector3.right).x - playerData.PlayerRadius 
-                                    < obstacle.position.x + obstacle.radius)
-                                {
-                                    return true;
-                                }
-                                break;
-                            case ActionsAvailable.MOVE_FORWARD_LEFT:
-                                if (!(playerData.playerPosition.x + playerData.PlayerRadius <
-                                      obstacle.position.x - obstacle.radius ||
-                                      playerData.playerPosition.x - playerData.PlayerRadius - 0.2 >
-                                      obstacle.position.x + obstacle.radius ||
-                                      playerData.playerPosition.z + playerData.PlayerRadius + 0.2 <
-                                      obstacle.position.z - obstacle.radius ||
-                                      playerData.playerPosition.z - playerData.PlayerRadius >
-                                      obstacle.position.z + obstacle.radius) && 
-                                    (playerData.playerPosition + Vector3.forward).z - playerData.PlayerRadius 
-                                    < obstacle.position.z + obstacle.radius && 
-                                    (playerData.playerPosition + Vector3.left).x + playerData.PlayerRadius 
-                                    > obstacle.position.x - obstacle.radius)
-                                {
-                                    return true;
-                                }
-                                break;
-                            case ActionsAvailable.MOVE_FORWARD_RIGHT:
-                                if (!(playerData.playerPosition.x + playerData.PlayerRadius + 0.2 <
-                                      obstacle.position.x - obstacle.radius ||
-                                      playerData.playerPosition.x - playerData.PlayerRadius >
-                                      obstacle.position.x + obstacle.radius ||
-                                      playerData.playerPosition.z + playerData.PlayerRadius + 0.2 <
-                                      obstacle.position.z - obstacle.radius ||
-                                      playerData.playerPosition.z - playerData.PlayerRadius >
-                                      obstacle.position.z + obstacle.radius) && 
-                                    (playerData.playerPosition + Vector3.forward).z - playerData.PlayerRadius 
-                                    < obstacle.position.z + obstacle.radius && 
-                                    (playerData.playerPosition + Vector3.right).x - playerData.PlayerRadius 
-                                    < obstacle.position.x + obstacle.radius)
-                                {
-                                    return true;
-                                }
-                                break;
-                            case ActionsAvailable.MOVE_BACK_LEFT:
-                                if (!(playerData.playerPosition.x + playerData.PlayerRadius <
-                                      obstacle.position.x - obstacle.radius ||
-                                      playerData.playerPosition.x - playerData.PlayerRadius - 0.2 >
-                                      obstacle.position.x + obstacle.radius ||
-                                      playerData.playerPosition.z + playerData.PlayerRadius <
-                                      obstacle.position.z - obstacle.radius ||
-                                      playerData.playerPosition.z - playerData.PlayerRadius - 0.2 >
-                                      obstacle.position.z + obstacle.radius) && 
-                                    (playerData.playerPosition + Vector3.back).z + playerData.PlayerRadius 
-                                    > obstacle.position.z - obstacle.radius && 
-                                    (playerData.playerPosition + Vector3.left).x + playerData.PlayerRadius 
-                                    > obstacle.position.x - obstacle.radius)
-                                {
-                                    return true;
-                                }
-                                break;
-                            case ActionsAvailable.MOVE_BACK_RIGHT:
-                                if (!(playerData.playerPosition.x + playerData.PlayerRadius + 0.2 <
-                                      obstacle.position.x - obstacle.radius ||
-                                      playerData.playerPosition.x - playerData.PlayerRadius >
-                                      obstacle.position.x + obstacle.radius ||
-                                      playerData.playerPosition.z + playerData.PlayerRadius <
-                                      obstacle.position.z - obstacle.radius ||
-                                      playerData.playerPosition.z - playerData.PlayerRadius - 0.2 >
-                                      obstacle.position.z + obstacle.radius) && 
-                                    (playerData.playerPosition + Vector3.back).z + playerData.PlayerRadius 
-                                    > obstacle.position.z - obstacle.radius && 
-                                    (playerData.playerPosition + Vector3.right).x - playerData.PlayerRadius 
-                                    < obstacle.position.x + obstacle.radius)
-                                {
-                                    return true;
-                                }
-                                break;
-                        }
+                        case ActionsAvailable.MOVE_FORWARD:
+                            if (!(playerData.playerPosition.x + playerData.PlayerRadius <
+                                  obstacle.position.x - obstacle.radius ||
+                                  playerData.playerPosition.x - playerData.PlayerRadius >
+                                  obstacle.position.x + obstacle.radius ||
+                                  playerData.playerPosition.z + playerData.PlayerRadius + 0.2 <
+                                  obstacle.position.z - obstacle.radius ||
+                                  playerData.playerPosition.z - playerData.PlayerRadius >
+                                  obstacle.position.z + obstacle.radius) && 
+                                (playerData.playerPosition + Vector3.forward).z - playerData.PlayerRadius 
+                                < obstacle.position.z + obstacle.radius)
+                            {
+                                return true;
+                            }
+                            break;
+                        case ActionsAvailable.MOVE_BACK:
+                            if (!(playerData.playerPosition.x + playerData.PlayerRadius <
+                                  obstacle.position.x - obstacle.radius ||
+                                  playerData.playerPosition.x - playerData.PlayerRadius >
+                                  obstacle.position.x + obstacle.radius ||
+                                  playerData.playerPosition.z + playerData.PlayerRadius <
+                                  obstacle.position.z - obstacle.radius ||
+                                  playerData.playerPosition.z - playerData.PlayerRadius - 0.2 >
+                                  obstacle.position.z + obstacle.radius) && 
+                                (playerData.playerPosition + Vector3.back).z + playerData.PlayerRadius 
+                                > obstacle.position.z - obstacle.radius)
+                            {
+                                return true;
+                            }
+                            break;
+                        case ActionsAvailable.MOVE_LEFT:
+                            if (!(playerData.playerPosition.x + playerData.PlayerRadius <
+                                  obstacle.position.x - obstacle.radius ||
+                                  playerData.playerPosition.x - playerData.PlayerRadius - 0.2 >
+                                  obstacle.position.x + obstacle.radius ||
+                                  playerData.playerPosition.z + playerData.PlayerRadius <
+                                  obstacle.position.z - obstacle.radius ||
+                                  playerData.playerPosition.z - playerData.PlayerRadius >
+                                  obstacle.position.z + obstacle.radius) && 
+                                (playerData.playerPosition + Vector3.left).x + playerData.PlayerRadius 
+                                > obstacle.position.x - obstacle.radius)
+                            {
+                                return true;
+                            }
+                            break;
+                        case ActionsAvailable.MOVE_RIGHT:
+                            if (!(playerData.playerPosition.x + playerData.PlayerRadius + 0.2 <
+                                  obstacle.position.x - obstacle.radius ||
+                                  playerData.playerPosition.x - playerData.PlayerRadius >
+                                  obstacle.position.x + obstacle.radius ||
+                                  playerData.playerPosition.z + playerData.PlayerRadius <
+                                  obstacle.position.z - obstacle.radius ||
+                                  playerData.playerPosition.z - playerData.PlayerRadius >
+                                  obstacle.position.z + obstacle.radius) && 
+                                (playerData.playerPosition + Vector3.right).x - playerData.PlayerRadius 
+                                < obstacle.position.x + obstacle.radius)
+                            {
+                                return true;
+                            }
+                            break;
+                        case ActionsAvailable.MOVE_FORWARD_LEFT:
+                            if (!(playerData.playerPosition.x + playerData.PlayerRadius <
+                                  obstacle.position.x - obstacle.radius ||
+                                  playerData.playerPosition.x - playerData.PlayerRadius - 0.2 >
+                                  obstacle.position.x + obstacle.radius ||
+                                  playerData.playerPosition.z + playerData.PlayerRadius + 0.2 <
+                                  obstacle.position.z - obstacle.radius ||
+                                  playerData.playerPosition.z - playerData.PlayerRadius >
+                                  obstacle.position.z + obstacle.radius) && 
+                                (playerData.playerPosition + Vector3.forward).z - playerData.PlayerRadius 
+                                < obstacle.position.z + obstacle.radius && 
+                                (playerData.playerPosition + Vector3.left).x + playerData.PlayerRadius 
+                                > obstacle.position.x - obstacle.radius)
+                            {
+                                return true;
+                            }
+                            break;
+                        case ActionsAvailable.MOVE_FORWARD_RIGHT:
+                            if (!(playerData.playerPosition.x + playerData.PlayerRadius + 0.2 <
+                                  obstacle.position.x - obstacle.radius ||
+                                  playerData.playerPosition.x - playerData.PlayerRadius >
+                                  obstacle.position.x + obstacle.radius ||
+                                  playerData.playerPosition.z + playerData.PlayerRadius + 0.2 <
+                                  obstacle.position.z - obstacle.radius ||
+                                  playerData.playerPosition.z - playerData.PlayerRadius >
+                                  obstacle.position.z + obstacle.radius) && 
+                                (playerData.playerPosition + Vector3.forward).z - playerData.PlayerRadius 
+                                < obstacle.position.z + obstacle.radius && 
+                                (playerData.playerPosition + Vector3.right).x - playerData.PlayerRadius 
+                                < obstacle.position.x + obstacle.radius)
+                            {
+                                return true;
+                            }
+                            break;
+                        case ActionsAvailable.MOVE_BACK_LEFT:
+                            if (!(playerData.playerPosition.x + playerData.PlayerRadius <
+                                  obstacle.position.x - obstacle.radius ||
+                                  playerData.playerPosition.x - playerData.PlayerRadius - 0.2 >
+                                  obstacle.position.x + obstacle.radius ||
+                                  playerData.playerPosition.z + playerData.PlayerRadius <
+                                  obstacle.position.z - obstacle.radius ||
+                                  playerData.playerPosition.z - playerData.PlayerRadius - 0.2 >
+                                  obstacle.position.z + obstacle.radius) && 
+                                (playerData.playerPosition + Vector3.back).z + playerData.PlayerRadius 
+                                > obstacle.position.z - obstacle.radius && 
+                                (playerData.playerPosition + Vector3.left).x + playerData.PlayerRadius 
+                                > obstacle.position.x - obstacle.radius)
+                            {
+                                return true;
+                            }
+                            break;
+                        case ActionsAvailable.MOVE_BACK_RIGHT:
+                            if (!(playerData.playerPosition.x + playerData.PlayerRadius + 0.2 <
+                                  obstacle.position.x - obstacle.radius ||
+                                  playerData.playerPosition.x - playerData.PlayerRadius >
+                                  obstacle.position.x + obstacle.radius ||
+                                  playerData.playerPosition.z + playerData.PlayerRadius <
+                                  obstacle.position.z - obstacle.radius ||
+                                  playerData.playerPosition.z - playerData.PlayerRadius - 0.2 >
+                                  obstacle.position.z + obstacle.radius) && 
+                                (playerData.playerPosition + Vector3.back).z + playerData.PlayerRadius 
+                                > obstacle.position.z - obstacle.radius && 
+                                (playerData.playerPosition + Vector3.right).x - playerData.PlayerRadius 
+                                < obstacle.position.x + obstacle.radius)
+                            {
+                                return true;
+                            }
+                            break;
                     }
-                    break;
-                case false:
-                    for (int i = 0; i < gs.obstacles.Length; i++)
-                    {
-                        var projectile = gs.projectiles[id];
-                        var obstacle = gs.obstacles[i];
-                        if (!(projectile.position.x + projectile.radius <
-                              obstacle.position.x - obstacle.radius ||
-                              projectile.position.x - projectile.radius >
-                              obstacle.position.x + obstacle.radius ||
-                              projectile.position.z + projectile.radius <
-                              obstacle.position.z - obstacle.radius ||
-                              projectile.position.z - projectile.radius >
-                              obstacle.position.z + obstacle.radius))
-                        {
-                            gs.projectiles.RemoveAtSwapBack(id);
-                            return true;
-                        }
-                    }
-                    break;
+                }
             }
+            else
+            {
+                for (int i = 0; i < gs.obstacles.Length; i++)
+                {
+                    var projectile = gs.projectiles[id];
+                    var obstacle = gs.obstacles[i];
+                    if (!(projectile.position.x + projectile.radius <
+                          obstacle.position.x - obstacle.radius ||
+                          projectile.position.x - projectile.radius >
+                          obstacle.position.x + obstacle.radius ||
+                          projectile.position.z + projectile.radius <
+                          obstacle.position.z - obstacle.radius ||
+                          projectile.position.z - projectile.radius >
+                          obstacle.position.z + obstacle.radius))
+                    {
+                        gs.projectiles.RemoveAtSwapBack(id);
+                        return true;
+                    }
+                }
+            }
+            
             return false;
         }
 
@@ -879,6 +881,11 @@ namespace Games.GameState
             var player2Data = gs.players[1];
             
             float distance = Vector3.Distance(player1Data.playerPosition, player2Data.playerPosition);
+
+            if (distance <= 2)
+            {
+                return;
+            }
 
             player1Data.PlayerScore += 30-(int)distance;
             player2Data.PlayerScore += 30-(int)distance;

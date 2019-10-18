@@ -2,6 +2,7 @@
 using Scripts.Menus;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using Games;
 using Games.Agents;
 using Games.GameState;
@@ -204,7 +205,7 @@ namespace Scripts.Games
             EndGame();
         }
 
-        public void InitStartGame()
+        public void InitStartGame(bool enablePaintWeapon)
         {
             // TODO : reset position of players and to reset all values of intent
             gameIsStart = true;
@@ -218,8 +219,8 @@ namespace Scripts.Games
             {
                 items.Add(ois.itemExposer[i].ItemGameObject);
             }
-                
-            GameStateRules.Init(ref gs);
+
+            GameStateRules.Init(ref gs, enablePaintWeapon);
             SetItemsPosition();
             InitItemsType();
             PopObstacle();
@@ -256,10 +257,12 @@ namespace Scripts.Games
                 if (gs.players[0].PlayerLifeStock > gs.players[1].PlayerLifeStock)
                 {
                     winnerId = 0;
+                    Destroy(players[1].gameObject);
                 }
                 else if (gs.players[0].PlayerLifeStock < gs.players[1].PlayerLifeStock)
                 {
                     winnerId = 1;
+                    Destroy(players[0].gameObject);
                 }
                 else
                 {

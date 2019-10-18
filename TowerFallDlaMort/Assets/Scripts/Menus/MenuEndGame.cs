@@ -17,7 +17,7 @@ public class MenuEndGame : MonoBehaviour, MenuInterface
 
     [SerializeField] 
     private GameController gameController;
-    
+
     public void BackToMenu()
     {
         SceneManager.LoadScene(0);
