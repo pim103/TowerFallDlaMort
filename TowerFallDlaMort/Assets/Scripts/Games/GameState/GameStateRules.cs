@@ -506,7 +506,7 @@ namespace Games.GameState
                 }
             }
 
-            //CheckItemsCollisionTrigger(ref gs, player1, player2);
+            CheckItemsCollisionTrigger(ref gs, player1, player2);
         }
 
         public static void CheckItemsCollisionTrigger(ref GameStateData gs, PlayerData player1, PlayerData player2)
