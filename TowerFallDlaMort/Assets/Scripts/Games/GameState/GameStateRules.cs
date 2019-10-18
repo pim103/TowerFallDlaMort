@@ -230,7 +230,7 @@ namespace Games.GameState
 
             CalculateScore(ref gs);
             gs.timer -= Time.deltaTime;
-            //TurretShoot(ref gs, 4);
+            TurretShoot(ref gs, 4);
         }
         
         public static void Step(ref GameStateData gs, Intent player1Actions, int id)
